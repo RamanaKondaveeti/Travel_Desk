@@ -1,0 +1,370 @@
+.admin-markup-coupon-shell {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-markup-coupon-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.admin-markup-coupon-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-markup-coupon-title-wrap h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: var(--text-primary);
+}
+
+.admin-markup-coupon-title-wrap strong {
+  color: var(--primary);
+}
+
+.admin-markup-coupon-title-line {
+  height: 2px;
+  width: 80px;
+  background: var(--primary);
+  border-radius: 999px;
+}
+
+.admin-markup-coupon-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-markup-coupon-btn {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text-primary);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.admin-markup-coupon-btn.filter.active,
+.admin-markup-coupon-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--surface-soft);
+}
+
+.admin-markup-coupon-btn.generate {
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.admin-markup-coupon-btn.export {
+  background: var(--success);
+  color: #ffffff;
+  border-color: var(--success);
+}
+
+.admin-markup-coupon-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-markup-coupon-filter {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel);
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-markup-coupon-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.admin-markup-coupon-filter-grid label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.admin-markup-coupon-filter-grid select {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: var(--panel);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+.admin-markup-coupon-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-markup-coupon-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.admin-markup-coupon-table thead {
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+  color: #ffffff;
+}
+
+.admin-markup-coupon-table th,
+.admin-markup-coupon-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.admin-markup-coupon-table th.action-col,
+.admin-markup-coupon-table td.action-col {
+  text-align: center;
+}
+
+.admin-markup-coupon-empty {
+  padding: 18px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.admin-markup-coupon-code {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  border: 1px dashed var(--border);
+  font-weight: 600;
+}
+
+.admin-markup-coupon-status {
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-markup-coupon-status.active {
+  background: var(--success-soft);
+  color: var(--success);
+  border-color: rgba(30, 142, 62, 0.35);
+}
+
+.admin-markup-coupon-status.inactive {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: rgba(180, 35, 24, 0.35);
+}
+
+.admin-markup-coupon-remark span {
+  color: var(--text-secondary);
+  display: block;
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-markup-coupon-action-group {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.admin-markup-coupon-action-group button {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text-primary);
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.admin-markup-coupon-action-group button:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--surface-soft);
+}
+
+.admin-markup-coupon-action-group button.danger {
+  color: var(--danger);
+  border-color: rgba(180, 35, 24, 0.35);
+  background: var(--danger-soft);
+}
+
+.admin-markup-coupon-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 5, 5, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 16px;
+}
+
+.admin-markup-coupon-modal {
+  background: var(--panel);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 48px rgba(122, 31, 31, 0.25);
+  width: min(720px, 95vw);
+  padding: 16px;
+}
+
+.admin-markup-coupon-modal.generate {
+  width: min(820px, 95vw);
+}
+
+.admin-markup-coupon-modal.small {
+  width: min(480px, 95vw);
+}
+
+.admin-markup-coupon-modal header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-markup-coupon-modal header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.admin-markup-coupon-modal header button {
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--text-primary);
+  border-radius: 10px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.generate-header {
+  margin-bottom: 8px;
+}
+
+.admin-markup-coupon-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.admin-markup-coupon-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.admin-markup-coupon-form input,
+.admin-markup-coupon-form select,
+.admin-markup-coupon-form textarea {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  background: var(--panel);
+  color: var(--text-primary);
+}
+
+.admin-markup-coupon-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.admin-markup-coupon-form .wide,
+.admin-markup-coupon-form .remark-field {
+  grid-column: 1 / -1;
+}
+
+.admin-markup-coupon-error {
+  margin: 12px 0 0;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.admin-markup-coupon-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.admin-markup-coupon-modal-actions button {
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-markup-coupon-modal-actions .primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.admin-markup-coupon-modal-actions .secondary {
+  background: var(--surface-soft);
+  color: var(--text-primary);
+}
+
+.admin-markup-coupon-modal-actions .danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: rgba(180, 35, 24, 0.35);
+}
+
+.admin-markup-coupon-delete-copy {
+  margin: 16px 0 0;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 900px) {
+  .admin-markup-coupon-table thead {
+    display: none;
+  }
+
+  .admin-markup-coupon-table tr {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .admin-markup-coupon-table td {
+    border-bottom: 0;
+  }
+}

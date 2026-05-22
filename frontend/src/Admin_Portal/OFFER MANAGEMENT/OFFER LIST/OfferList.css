@@ -1,0 +1,102 @@
+.admin-portal-offer-management {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Offer List Thumbnail Styles */
+.offer-list-thumbnail-box {
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid rgba(120, 50, 50, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.offer-list-thumbnail-box:hover {
+  border-color: var(--primary, #a73434);
+  box-shadow: 0 4px 10px rgba(167, 52, 52, 0.15);
+}
+
+.offer-list-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease-in-out;
+}
+
+.offer-list-thumbnail:hover {
+  transform: scale(1.08);
+}
+
+.offer-list-no-image {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #664242);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* Edit Offer Image Uploading & Preview */
+.offer-edit-file-uploader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 0;
+}
+
+.offer-edit-file-uploader input[type="file"] {
+  border: 1px dashed var(--border, #e4caca);
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--surface-soft, #fffdfd);
+  cursor: pointer;
+  width: 100%;
+  font-size: 0.85rem;
+}
+
+.offer-edit-file-uploader input[type="file"]::file-selector-button {
+  background: var(--primary, #a73434);
+  color: #ffffff;
+  border: 0;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 12px;
+  transition: background-color 0.2s;
+}
+
+.offer-edit-file-uploader input[type="file"]::file-selector-button:hover {
+  background: #8b2525;
+}
+
+.offer-edit-current-image {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px;
+  background: var(--surface-soft, #fff6f6);
+  border-radius: 10px;
+  border: 1px solid var(--border, #ead6d6);
+  max-width: 320px;
+}
+
+.offer-edit-current-image span {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #664242);
+  font-weight: 600;
+}
+
+.offer-edit-current-image img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(120, 50, 50, 0.15);
+}

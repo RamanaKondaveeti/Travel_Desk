@@ -1,0 +1,4006 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap");
+
+.bus-flow-page {
+  --flow-bg: var(--theme-page, #fff7f2);
+  --flow-surface: #ffffff;
+  --flow-surface-soft: var(--theme-surface-warm, #fffaf6);
+  --flow-border: var(--theme-border, #f2cbbf);
+  --flow-text: var(--theme-text, #111827);
+  --flow-muted: var(--theme-muted, #64748b);
+  --flow-primary: var(--theme-primary, #f05a28);
+  --flow-primary-strong: var(--theme-primary-strong, #df3f1f);
+  --flow-accent: var(--theme-primary, #f05a28);
+  --flow-accent-strong: var(--theme-primary-strong, #df3f1f);
+  --flow-success: var(--theme-primary, #f05a28);
+  --flow-danger: var(--theme-primary, #f05a28);
+  --flow-primary-soft: var(--theme-primary-soft, #fff0e9);
+  --flow-accent-soft: #fff5ef;
+  --flow-focus: rgba(240, 90, 40, 0.18);
+  --flow-shadow-md: var(--theme-shadow, 0 18px 45px rgba(125, 59, 31, 0.12));
+  --flow-shadow-sm: var(--theme-shadow-sm, 0 10px 24px rgba(125, 59, 31, 0.08));
+  --flow-heading-font: var(--app-font-family);
+  --flow-body-font: var(--app-font-family);
+
+  min-height: calc(100vh - 76px);
+  padding: 12px 6px 18px;
+  font-family: var(--flow-body-font);
+  color: var(--flow-text);
+  background:
+    radial-gradient(circle at 3% 8%, rgba(240, 90, 40, 0.1), transparent 30%),
+    radial-gradient(circle at 98% 6%, rgba(255, 169, 124, 0.16), transparent 28%),
+    var(--flow-bg);
+}
+
+.bus-flow-page *,
+.bus-flow-page *::before,
+.bus-flow-page *::after {
+  box-sizing: border-box;
+}
+
+.bus-flow-shell {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: grid;
+  gap: 10px;
+}
+
+.bus-flow-empty {
+  border: 1px solid var(--flow-border);
+  border-radius: 16px;
+  background: var(--flow-surface);
+  box-shadow: var(--flow-shadow-sm);
+  padding: 28px;
+  text-align: center;
+}
+
+.bus-flow-empty h2 {
+  margin: 0;
+  color: var(--theme-navy, #1f2a44);
+  font-family: var(--flow-heading-font);
+}
+
+.bus-flow-empty p {
+  margin: 8px 0 0;
+  color: var(--flow-muted);
+}
+
+.bus-flow-empty button {
+  margin-top: 14px;
+  border: 0;
+  border-radius: 9px;
+  min-height: 40px;
+  padding: 0 14px;
+  background: linear-gradient(
+    135deg,
+    var(--flow-primary),
+    var(--flow-primary-strong)
+  );
+  color: #ffffff;
+  font-size: 0.774rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bus-flow-summary-card {
+  border: 1px solid var(--flow-border);
+  border-radius: 12px;
+  background: var(--flow-surface);
+  box-shadow: var(--flow-shadow-sm);
+  overflow: hidden;
+}
+
+.bus-flow-overview-banner {
+  position: relative;
+  min-height: 138px;
+  border-bottom: 1px solid #e5ecf5;
+  overflow: hidden;
+  background: var(--flow-primary-strong, #df3f1f);
+}
+
+.bus-flow-overview-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bus-flow-overview-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(223, 63, 31, 0.96) 0%,
+    rgba(240, 68, 35, 0.82) 100%
+  );
+}
+
+.bus-flow-overview-content {
+  position: relative;
+  z-index: 1;
+  min-height: 138px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.bus-flow-overview-logo-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.18);
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  backdrop-filter: blur(1px);
+  flex-shrink: 0;
+}
+
+.bus-flow-overview-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(7, 20, 35, 0.35));
+}
+
+.bus-flow-overview-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.bus-flow-overview-copy p {
+  margin: 0;
+  color: rgba(232, 241, 255, 0.86);
+  font-size: 0.711rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bus-flow-overview-copy h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.215rem;
+  line-height: 1.2;
+  font-family: var(--flow-heading-font);
+}
+
+.bus-flow-overview-copy span {
+  color: rgba(236, 244, 255, 0.94);
+  font-size: 0.783rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.bus-flow-summary-grid {
+  min-height: 92px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.2fr) repeat(3, minmax(120px, 1fr)) minmax(132px, 1fr)
+    120px;
+  border-bottom: 1px solid #e5ecf5;
+}
+
+.bus-flow-summary-grid article {
+  border-right: 1px solid #e5ecf5;
+  padding: 12px 14px;
+  display: grid;
+  align-content: center;
+  gap: 4px;
+}
+
+.bus-flow-summary-grid article:last-child {
+  border-right: 0;
+}
+
+.bus-flow-summary-grid h2 {
+  margin: 0;
+  color: #1f3a5c;
+  font-size: 1.215rem;
+  font-family: var(--flow-heading-font);
+}
+
+.bus-flow-summary-grid p {
+  margin: 0;
+  color: var(--theme-navy, #1f2a44);
+  font-size: 0.828rem;
+  font-weight: 600;
+}
+
+.bus-flow-summary-grid small {
+  color: #597293;
+  font-size: 0.756rem;
+  font-weight: 600;
+}
+
+.bus-flow-summary-grid strong {
+  color: var(--theme-navy, #1f2a44);
+  font-size: 1.17rem;
+  font-family: var(--flow-heading-font);
+}
+
+.bus-flow-duration {
+  justify-items: center;
+  text-align: center;
+}
+
+.bus-flow-duration svg {
+  color: var(--flow-primary, #f04423);
+}
+
+.bus-flow-summary-actions {
+  padding: 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bus-flow-summary-actions button {
+  border-radius: 8px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--flow-border, #f2cbbf);
+  background: #ffffff;
+  color: var(--flow-primary, #f04423);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bus-flow-summary-actions button.active {
+  border-color: transparent;
+  background: linear-gradient(
+    135deg,
+    var(--flow-accent),
+    var(--flow-accent-strong)
+  );
+  color: #ffffff;
+}
+
+.bus-flow-seat-loader {
+  border: 1px solid var(--flow-border);
+  border-radius: 12px;
+  min-height: 210px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(240, 68, 35, 0.03) 30%,
+      rgba(240, 68, 35, 0.04) 60%
+    ),
+    #f7fafc;
+  box-shadow: var(--flow-shadow-sm);
+  display: grid;
+  place-items: center;
+  gap: 16px;
+}
+
+.bus-flow-seat-error {
+  border: 1px solid #e8b4b8;
+  border-radius: 12px;
+  min-height: 210px;
+  background: #fef2f4;
+  box-shadow: var(--flow-shadow-sm);
+  display: grid;
+  place-items: center;
+}
+
+.bus-flow-seat-error .error-content {
+  text-align: center;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+  gap: 12px;
+}
+
+.bus-flow-seat-error .error-content svg {
+  color: #c43846;
+}
+
+.bus-flow-seat-error .error-content h3 {
+  margin: 0;
+  color: #a82f3a;
+  font-size: 1.35rem;
+  font-family: var(--flow-heading-font);
+}
+
+.bus-flow-seat-error .error-content p {
+  margin: 0;
+  color: var(--flow-muted, #64748b);
+  font-size: 0.85rem;
+  max-width: 400px;
+}
+
+.bus-flow-seat-error .error-content button {
+  margin-top: 8px;
+  border: 0;
+  border-radius: 9px;
+  min-height: 40px;
+  padding: 0 20px;
+  background: linear-gradient(
+    135deg,
+    var(--flow-primary),
+    var(--flow-primary-strong)
+  );
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.bus-flow-seat-error .error-content button:hover {
+  transform: translateY(-1px);
+}
+
+.bus-flow-seat-loader .loader-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.bus-flow-seat-loader .loader-bars span {
+  width: 12px;
+  border-radius: 4px;
+  background: var(--flow-primary, #f04423);
+  animation: flow-loader-bars 1s ease-in-out infinite;
+}
+
+.bus-flow-seat-loader .loader-bars span:nth-child(1) {
+  height: 46px;
+  animation-delay: 0s;
+}
+
+.bus-flow-seat-loader .loader-bars span:nth-child(2) {
+  height: 30px;
+  animation-delay: 0.12s;
+}
+
+.bus-flow-seat-loader .loader-bars span:nth-child(3) {
+  height: 38px;
+  animation-delay: 0.24s;
+}
+
+@keyframes flow-loader-bars {
+  0%,
+  100% {
+    transform: scaleY(0.72);
+    opacity: 0.62;
+  }
+
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+.bus-flow-seat-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 12px;
+}
+
+.bus-flow-seat-zone {
+  min-width: 0;
+  border: 1px solid #eceff4;
+  border-radius: 16px;
+  background: #f7f8fa;
+  box-shadow: 0 18px 36px rgba(20, 29, 43, 0.08);
+  padding: 12px;
+  position: relative;
+}
+
+.bus-flow-seat-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 0.8fr);
+  gap: 10px;
+}
+
+.bus-flow-fares {
+  border: 1px solid #edf0f5;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.bus-flow-fares h3 {
+  margin: 0;
+  color: #171b22;
+  font-size: 1rem;
+  font-family: var(--flow-heading-font);
+}
+
+.bus-flow-info-btn {
+  border: none;
+  background: linear-gradient(135deg, var(--flow-primary, #f04423), var(--flow-primary-strong, #df3f1f));
+  color: #ffffff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(24, 95, 188, 0.3);
+}
+
+.bus-flow-info-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(24, 95, 188, 0.4);
+}
+
+.bus-flow-fare-chips {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.bus-flow-fare-chips button {
+  border: 1px solid #eceff4;
+  border-radius: 10px;
+  min-height: 34px;
+  padding: 0 12px;
+  background: #ffffff;
+  color: #383f4c;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bus-flow-fare-chips button.active {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--flow-primary, #f04423), var(--flow-primary-strong, #df3f1f));
+  color: #ffffff;
+}
+
+.bus-flow-seat-legend {
+  border: 1px solid #edf0f5;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.bus-flow-page .legend {
+  color: #233c5d;
+  font-size: 0.68rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bus-flow-page .legend::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid var(--flow-border, #f2cbbf);
+  background: #ffffff;
+}
+
+.bus-flow-page .legend.female::before {
+  border-color: var(--flow-border, #f2cbbf);
+  background: linear-gradient(135deg, var(--flow-primary-soft, #fff0e9), var(--flow-primary-soft, #fff0e9));
+}
+
+.bus-flow-page .legend.booked::before {
+  border-color: #b1bdcc;
+  background: linear-gradient(135deg, #e0e4e9, #d0d7e0);
+}
+
+.bus-flow-page .legend.female-booked::before {
+  border-color: #d26a93;
+  background: linear-gradient(135deg, #ffeaf3, #f7bfd7);
+}
+
+.bus-flow-page .legend.female-adjacent::before {
+  border-color: #d26a93;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 2px #f3a3c4;
+}
+
+.bus-flow-page .legend.male::before {
+  border-color: var(--flow-border, #f2cbbf);
+  background: linear-gradient(135deg, var(--flow-primary-soft, #fff0e9), var(--flow-primary-soft, #fff0e9));
+}
+
+.bus-flow-page .legend.selected::before {
+  border-color: #c43846;
+  background: linear-gradient(135deg, #fde8eb, #f8d5d9);
+}
+
+.bus-flow-page .legend.selected-male::before {
+  border-color: var(--flow-primary, #f04423);
+  background: linear-gradient(135deg, #e8f1ff, #d7e8ff);
+}
+
+.bus-flow-page .legend.selected-female::before {
+  border-color: #d26a93;
+  background: linear-gradient(135deg, #fff0f6, #fbd9e8);
+}
+
+.bus-flow-sleeper-layout {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 12px;
+  overflow-x: auto;
+  padding: 2px 2px 6px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.bus-flow-horizontal-deck {
+  width: 100%;
+  min-width: 720px;
+  padding: 56px 18px 18px 132px;
+  display: block;
+}
+
+.bus-flow-horizontal-deck::before {
+  content: "FRONT";
+  top: 20px;
+  left: 132px;
+}
+
+.bus-flow-horizontal-deck-label {
+  position: absolute;
+  left: 18px;
+  top: 56px;
+  bottom: 18px;
+  width: 84px;
+  border-right: 1px solid #e1e8f2;
+  color: var(--flow-primary, #f04423);
+  display: grid;
+  place-items: center;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.bus-flow-horizontal-driver {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  width: 84px;
+  min-height: 34px;
+  border: 1px solid #d4d9e2;
+  border-radius: 999px;
+  background: #f5f6f8;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.66rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.bus-flow-horizontal-track {
+  width: max-content;
+  min-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bus-flow-horizontal-group {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  align-items: center;
+  gap: 6px;
+  padding-right: 12px;
+  border-right: 1px dashed #d2dce9;
+}
+
+.bus-flow-horizontal-group:last-child {
+  border-right: 0;
+  padding-right: 0;
+}
+
+.bus-flow-empty-deck {
+  min-height: 82px;
+  color: var(--flow-muted, #64748b);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.bus-flow-deck-card {
+  width: max-content;
+  min-width: 272px;
+  max-width: none;
+  margin-top: 14px;
+  border: 1px solid #eceff4;
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 54px 16px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bus-flow-deck-card::before {
+  content: "FRONT";
+  position: absolute;
+  top: 20px;
+  left: 16px;
+  color: #9aa3af;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.bus-flow-deck-card > aside {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  border: 1px solid var(--flow-border, #f2cbbf);
+  border-radius: 8px;
+  min-height: 34px;
+  padding: 0 14px;
+  background: linear-gradient(135deg, var(--flow-primary-soft, #fff0e9), var(--flow-border, #f2cbbf));
+  color: var(--flow-primary, #f04423);
+  font-size: 0.7rem;
+  font-weight: 800;
+  font-family: var(--flow-heading-font);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bus-flow-sleeper-deck {
+  border: 1px solid #eceff4;
+  border-radius: 16px;
+  width: max-content;
+  max-width: none;
+  background: #ffffff;
+  padding: 58px 18px 18px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  position: relative;
+}
+
+.bus-flow-sleeper-layout .bus-flow-deck-card {
+  margin-top: 0;
+}
+
+.bus-flow-driver-cabin {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  border: 1px solid #d4d9e2;
+  border-radius: 999px;
+  min-height: 34px;
+  min-width: 34px;
+  padding: 0 10px;
+  background: #f5f6f8;
+  color: #6b7280;
+  font-size: 0.66rem;
+  font-weight: 800;
+  font-family: var(--flow-heading-font);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bus-flow-deck-label {
+  position: absolute;
+  top: 16px;
+  left: 76px;
+  border: 1px solid #eceff4;
+  border-radius: 999px;
+  min-height: 34px;
+  padding: 0 13px;
+  background: #ffffff;
+  color: #171b22;
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-family: var(--flow-heading-font);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bus-flow-seater-grid {
+  display: grid;
+  gap: 6px;
+  width: max-content;
+}
+
+.bus-flow-sleeper-grid,
+.bus-flow-hybrid-seater-grid {
+  display: grid;
+  gap: 6px;
+  row-gap: 6px;
+  width: max-content;
+}
+
+.bus-flow-seater-row {
+  display: grid;
+  grid-template-columns: repeat(2, 42px) 34px repeat(2, 42px);
+  gap: 5px;
+  align-items: center;
+}
+
+.bus-flow-sleeper-row {
+  display: grid;
+  grid-template-columns: 62px 24px 62px 62px;
+  gap: 5px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.bus-flow-hybrid-seater-row {
+  display: grid;
+  grid-template-columns: 48px 34px 48px 48px;
+  gap: 5px;
+  align-items: center;
+}
+
+.bus-flow-sleeper-row:last-child {
+  margin-bottom: 0;
+}
+
+.bus-flow-sleeper-row .bus-flow-seat:nth-child(1),
+.bus-flow-sleeper-row .bus-flow-seat:nth-child(2) {
+  justify-self: end;
+}
+
+.bus-flow-sleeper-row .bus-flow-seat:nth-child(4) {
+  justify-self: start;
+}
+
+.bus-flow-seat-gap {
+  min-height: 34px;
+  width: 16px;
+}
+
+.bus-flow-seat-gap {
+  min-height: 34px;
+}
+
+.bus-flow-seat {
+  border: 1px solid #d9dde4;
+  border-radius: 9px;
+  min-height: 60px;
+  background: #f9fafb;
+  color: #4b5563;
+  font-size: 0.62rem;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+  position: relative;
+  padding: 3px;
+  gap: 2px;
+}
+
+.bus-flow-seat--seater {
+  width: 42px;
+  min-height: 44px;
+  aspect-ratio: 1 / 1.08;
+}
+
+.bus-flow-hybrid-seater-row .bus-flow-seat--seater {
+  width: 48px;
+  min-height: 46px;
+}
+
+.bus-flow-seat--sleeper {
+  width: 62px;
+  min-height: 88px;
+  border-radius: 9px;
+  justify-content: center;
+}
+
+.bus-flow-seat--sleeper::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 6px;
+  height: 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  opacity: 0.6;
+}
+
+.seat-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  width: 24px;
+}
+
+.seat-icon {
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+  opacity: 0.85;
+}
+
+.bus-flow-seat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(25, 43, 66, 0.18);
+}
+
+.seat-badge {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.seat-badge.booked {
+  background: #d0d7e0;
+  color: #6a7484;
+}
+
+.seat-badge.booked.female-booked {
+  background: #f7bfd7;
+  color: #8d2858;
+  border: 1px solid #d26a93;
+}
+
+.seat-badge.female {
+  background: var(--flow-primary-soft, #fff0e9);
+  color: #5178ab;
+  border: 1px solid var(--flow-border, #f2cbbf);
+}
+
+.seat-badge.male {
+  background: var(--flow-primary-soft, #fff0e9);
+  color: #3a669f;
+  border: 1px solid var(--flow-border, #f2cbbf);
+}
+
+.seat-label {
+  margin-top: 0px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.seat-fare {
+  margin-top: 1px;
+  color: #1f2937;
+  font-size: 0.56rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.bus-flow-seat.status-available {
+  border-color: #c4d2e5;
+  background: #ffffff;
+  color: #687f9f;
+}
+
+.bus-flow-seat.status-female {
+  border-color: var(--flow-border, #f2cbbf);
+  background: linear-gradient(135deg, var(--flow-primary-soft, #fff0e9), var(--flow-primary-soft, #fff0e9));
+  color: #5178ab;
+}
+
+.bus-flow-seat.status-male {
+  border-color: var(--flow-border, #f2cbbf);
+  background: linear-gradient(135deg, var(--flow-primary-soft, #fff0e9), var(--flow-primary-soft, #fff0e9));
+  color: #3a669f;
+}
+
+.bus-flow-seat.status-booked {
+  border-color: #a7b5c7;
+  background: linear-gradient(135deg, #e0e4e9, #d0d7e0);
+  color: #6a7484;
+  cursor: not-allowed;
+}
+
+.bus-flow-seat.status-booked-female {
+  border-color: #d26a93;
+  background: linear-gradient(135deg, #ffeaf3, #f7bfd7);
+  color: #8d2858;
+}
+
+.bus-flow-seat.status-female-adjacent:not(.status-booked):not(.status-selected) {
+  border-color: #d26a93;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, #f7bfd7, #d26a93) border-box;
+  box-shadow: inset 0 0 0 2px rgba(210, 106, 147, 0.28);
+  color: #8d2858;
+}
+
+.bus-flow-seat.status-booked:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.bus-flow-seat.status-selected {
+  border-color: #c43846;
+  background: linear-gradient(135deg, #fde8eb, #f8d5d9);
+  color: #a82f3a;
+  box-shadow: 0 4px 12px rgba(196, 56, 70, 0.2);
+}
+
+.bus-flow-seat.status-selected-male {
+  border-color: var(--flow-primary, #f04423);
+  background: linear-gradient(135deg, #e8f1ff, #d7e8ff);
+  color: #255f9f;
+  box-shadow: 0 4px 12px rgba(79, 134, 201, 0.18);
+}
+
+.bus-flow-seat.status-selected-female {
+  border-color: #d26a93;
+  background: linear-gradient(135deg, #fff0f6, #fbd9e8);
+  color: #9f315f;
+  box-shadow: 0 4px 12px rgba(210, 106, 147, 0.18);
+}
+
+.bus-flow-seat.is-dimmed:not(.status-selected) {
+  opacity: 0.45;
+}
+
+.bus-flow-seat-tooltip {
+  position: fixed;
+  pointer-events: none;
+  border: 1px solid #d1ddec;
+  border-radius: 7px;
+  min-height: 26px;
+  padding: 0 9px;
+  background: #ffffff;
+  color: #2b476c;
+  font-size: 0.711rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 10px 16px rgba(15, 29, 47, 0.2);
+  z-index: 1800;
+}
+
+.bus-flow-point-panel {
+  border: 1px solid #d0d9e4;
+  border-radius: 12px;
+  background: #eef1f6;
+  box-shadow: var(--flow-shadow-sm);
+  padding: 10px;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  right: auto;
+}
+
+.bus-flow-point-panel h3 {
+  margin: 0;
+  border: 1px solid #d2d9e2;
+  border-radius: 10px;
+  background: #f8f9fb;
+  min-height: 52px;
+  padding: 10px 12px;
+  color: #172231;
+  font-size: 1.62rem;
+  font-family: var(--flow-heading-font);
+}
+
+.bus-flow-page .point-tabs {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.bus-flow-page .point-tabs button {
+  border: 1px solid #cfd9e6;
+  border-radius: 7px;
+  min-height: 34px;
+  padding: 0 10px;
+  background: #ffffff;
+  color: #1e62ba;
+  font-size: 0.774rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bus-flow-page .point-tabs button.active {
+  border-color: #1f64bf;
+  box-shadow: inset 0 0 0 1px #1f64bf;
+}
+
+.bus-flow-page .point-list {
+  max-height: 292px;
+  overflow-y: auto;
+  display: grid;
+  gap: 8px;
+  padding-right: 3px;
+}
+
+.bus-flow-page .point-list::-webkit-scrollbar {
+  width: 7px;
+}
+
+.bus-flow-page .point-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #206ccf;
+}
+
+.bus-flow-page .point-item {
+  border: 1px solid #d3deeb;
+  border-radius: 10px;
+  background: var(--flow-primary-soft, #fff0e9);
+  min-height: 62px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bus-flow-page .point-item i {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid #c5d2e4;
+  background: #ffffff;
+}
+
+.bus-flow-page .point-item strong {
+  display: block;
+  color: #223a5a;
+  font-size: 0.918rem;
+  font-family: var(--flow-heading-font);
+}
+
+.bus-flow-page .point-item span {
+  display: block;
+  margin-top: 2px;
+  color: #577091;
+  font-size: 0.756rem;
+}
+
+.bus-flow-page .point-item small {
+  color: #233a58;
+  font-size: 0.765rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bus-flow-page .point-item.selected {
+  border-color: var(--flow-primary, #f04423);
+  background: var(--flow-primary-soft, #fff0e9);
+}
+
+.bus-flow-page .point-item.selected i {
+  border-color: var(--flow-primary, #f04423);
+  background: var(--flow-primary, #f04423);
+}
+
+.selected-seat-summary {
+  border-top: 1px solid #d0dae7;
+  padding-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.selected-seat-summary h4 {
+  margin: 0;
+  color: #132032;
+  font-size: 1.35rem;
+  font-family: var(--flow-heading-font);
+}
+
+.selected-seat-summary strong {
+  color: #1f3858;
+  font-size: 1.8rem;
+  font-family: var(--flow-heading-font);
+}
+
+.selected-seat-list {
+  margin: -3px 0 0;
+  color: #597293;
+  font-size: 0.774rem;
+  min-height: 20px;
+  display: grid;
+  gap: 8px;
+}
+
+.selected-seat-gender-row {
+  border: 1px solid #d1ddec;
+  border-radius: 9px;
+  min-height: 44px;
+  padding: 6px 8px;
+  background: #f8fbff;
+  display: grid;
+  grid-template-columns: minmax(48px, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.selected-seat-gender-row .seat-label-text {
+  color: #203a5f;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.seat-gender-select {
+  width: 100%;
+  border: 1px solid var(--flow-border, #f2cbbf);
+  border-radius: 8px;
+  min-height: 34px;
+  padding: 0 8px;
+  background: #ffffff;
+  color: #203a5f;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.flow-error {
+  margin: 0;
+  border: 1px solid #bfd2ec;
+  border-radius: 8px;
+  min-height: 35px;
+  padding: 0 10px;
+  background: var(--flow-primary-soft, #fff0e9);
+  color: #396cae;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.flow-continue-btn,
+.flow-pay-btn {
+  border: 0;
+  border-radius: 10px;
+  min-height: 42px;
+  padding: 0 14px;
+  background: linear-gradient(
+    135deg,
+    var(--flow-accent),
+    var(--flow-accent-strong)
+  );
+  color: #ffffff;
+  font-size: 0.972rem;
+  font-family: var(--flow-heading-font);
+  cursor: pointer;
+}
+
+.flow-continue-btn:disabled,
+.flow-pay-btn:disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
+.flow-continue-btn.align-right {
+  margin-left: auto;
+}
+
+.bus-passenger-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(290px, 0.74fr);
+  gap: 12px;
+}
+
+.bus-passenger-main,
+.bus-passenger-side {
+  display: grid;
+  gap: 12px;
+}
+
+.flow-card {
+  border: 1px solid #ced8e6;
+  border-radius: 12px;
+  background: var(--flow-surface);
+  box-shadow: var(--flow-shadow-sm);
+  overflow: hidden;
+}
+
+.flow-card > header {
+  min-height: 46px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    var(--flow-accent),
+    var(--flow-accent-strong)
+  );
+  font-size: 1.53rem;
+  font-family: var(--flow-heading-font);
+}
+
+.flow-card-body {
+  padding: 14px;
+}
+
+.flow-card.compact > header {
+  min-height: 42px;
+  font-size: 1.26rem;
+}
+
+.bus-journey-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px 14px;
+}
+
+.bus-journey-grid small {
+  display: block;
+  color: #20344e;
+  font-size: 0.774rem;
+  font-weight: 600;
+}
+
+.bus-journey-grid strong {
+  display: block;
+  margin-top: 3px;
+  color: #132032;
+  font-size: 1.062rem;
+  font-family: var(--flow-heading-font);
+}
+
+.bus-journey-grid .journey-duration {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+}
+
+.bus-journey-grid .journey-duration svg {
+  color: #296bc2;
+}
+
+.bus-journey-grid .journey-point {
+  grid-column: span 2;
+  border: 1px dashed #9cbae1;
+  border-radius: 10px;
+  background: #e8f0fb;
+  padding: 10px;
+}
+
+.bus-journey-grid .journey-point span {
+  display: block;
+  color: #1e3655;
+  font-size: 0.675rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+}
+
+.bus-journey-grid .journey-point p {
+  margin: 5px 0 0;
+  color: #13253c;
+  font-size: 1.44rem;
+  font-family: var(--flow-heading-font);
+}
+
+.bus-journey-grid .journey-point small {
+  margin-top: 2px;
+  color: #334f73;
+  font-size: 0.756rem;
+  line-height: 1.4;
+}
+
+.passenger-row + .passenger-row {
+  margin-top: 10px;
+}
+
+.passenger-row h4 {
+  margin: 0;
+  color: #172c48;
+  font-size: 1.8rem;
+  font-family: var(--flow-heading-font);
+}
+
+.passenger-row h4 span {
+  margin-left: 8px;
+  color: var(--flow-primary, #f04423);
+  font-size: 0.81rem;
+  font-weight: 700;
+}
+
+.passenger-fields {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 12px;
+  row-gap: 16px;
+  align-items: start;
+}
+
+.passenger-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.passenger-field span {
+  min-height: 20px;
+  color: #001f49;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.passenger-option-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.passenger-option-toggle .btn {
+  flex: 1;
+  min-height: 32px;
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.passenger-option-toggle .btn-blue {
+  background: linear-gradient(135deg, var(--flow-primary), var(--flow-primary-strong));
+  color: #ffffff;
+  border: none;
+}
+
+.passenger-option-toggle .btn-gray {
+  background: #ffffff;
+  color: var(--flow-primary-strong);
+  border: 1px solid var(--flow-border);
+}
+
+.contact-input input,
+.coupon-box input,
+.payment-form-grid input,
+.payment-form-grid select {
+  width: 100%;
+  border: 1px solid #c4d2e4;
+  border-radius: 9px;
+  min-height: 40px;
+  padding: 0 10px;
+  background: #fefefe;
+  color: #223b5b;
+  font-size: 0.81rem;
+  box-sizing: border-box;
+}
+
+.passenger-fields select,
+.passenger-fields input {
+  width: 100%;
+  height: 40px;
+  min-height: 40px;
+  border: 1px solid #c4d2e4;
+  border-radius: 9px;
+  padding: 0 16px;
+  background: #fefefe;
+  color: #223b5b;
+  font-size: 0.92rem;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.passenger-fields select:focus-visible,
+.passenger-fields input:focus-visible {
+  outline: none;
+  border-color: var(--flow-primary);
+  box-shadow: 0 0 0 3px rgba(240, 68, 35, 0.16);
+}
+
+.passenger-restriction-note {
+  color: #9a3412;
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.contact-grid label {
+  display: grid;
+  gap: 7px;
+}
+
+.contact-grid span {
+  color: #1a3150;
+  font-size: 0.846rem;
+  font-weight: 700;
+}
+
+.contact-input {
+  border: 1px solid #c4d2e4;
+  border-radius: 9px;
+  min-height: 40px;
+  background: #fefefe;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+}
+
+.contact-input svg {
+  color: #5c7597;
+}
+
+.contact-input input {
+  border: 0;
+  min-height: 36px;
+  padding: 0;
+  background: transparent;
+}
+
+.acknowledgement {
+  display: grid;
+  gap: 10px;
+}
+
+.ack-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.ack-checkbox input {
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+  accent-color: var(--flow-primary, #f04423);
+}
+
+.ack-checkbox span {
+  color: #3372c4;
+  font-size: 0.846rem;
+}
+
+.ack-pay-strip {
+  border: 1px solid #d0d9e5;
+  border-radius: 9px;
+  min-height: 40px;
+  background: var(--flow-primary-soft, #fff0e9);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 10px;
+}
+
+.ack-pay-strip span {
+  color: #223a59;
+  font-size: 0.918rem;
+  font-family: var(--flow-heading-font);
+}
+
+.ack-pay-strip small {
+  color: #38557c;
+  font-size: 0.765rem;
+  font-weight: 700;
+}
+
+.fare-list {
+  display: grid;
+  gap: 9px;
+}
+
+.fare-list > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 7px;
+  border-bottom: 1px dashed #d0dbea;
+}
+
+.fare-list > div:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.fare-list span {
+  color: #223a59;
+  font-size: 0.927rem;
+}
+
+.fare-list strong {
+  color: #162130;
+  font-size: 0.918rem;
+}
+
+.fare-list .grand-total span,
+.fare-list .grand-total strong {
+  color: var(--flow-primary-strong, #df3f1f);
+  font-family: var(--flow-heading-font);
+  font-size: 1.215rem;
+}
+
+.coupon-box {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0;
+  align-items: stretch;
+}
+
+.coupon-box input {
+  border-radius: 9px 0 0 9px;
+  min-height: 42px;
+  border-color: #d7e3f2;
+  background: #fbfdff;
+}
+
+.coupon-box button {
+  border: 0;
+  border-radius: 0 9px 9px 0;
+  min-height: 42px;
+  padding: 0 16px;
+  background: linear-gradient(
+    135deg,
+    var(--flow-accent),
+    var(--flow-accent-strong)
+  );
+  color: #ffffff;
+  font-size: 0.738rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.coupon-box button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.coupon-offer-list {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.coupon-box .coupon-offer-card {
+  width: 100%;
+  min-height: auto;
+  border: 1px solid #e4edf8;
+  border-radius: 8px;
+  padding: 12px;
+  background: #ffffff;
+  color: #20324d;
+  box-shadow: 0 10px 22px rgba(34, 60, 95, 0.07);
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 10px;
+  text-align: left;
+}
+
+.coupon-box .coupon-offer-card:hover,
+.coupon-box .coupon-offer-card.selected {
+  border-color: var(--flow-primary);
+  background: #fff8f4;
+  box-shadow: 0 14px 26px rgba(240, 68, 35, 0.13);
+}
+
+.coupon-box .coupon-offer-card:disabled {
+  cursor: not-allowed;
+}
+
+.coupon-offer-state {
+  border: 1px dashed #d4e0ee;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fbfdff;
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.coupon-offer-value {
+  color: var(--flow-primary-strong);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.coupon-offer-card strong {
+  justify-self: end;
+  border: 1px dashed #f0a58f;
+  border-radius: 7px;
+  padding: 4px 8px;
+  background: #fff4ed;
+  color: #b9381c;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.coupon-offer-meta,
+.coupon-offer-foot,
+.coupon-offer-note {
+  grid-column: 1 / -1;
+  color: #5c708c;
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.coupon-offer-foot {
+  color: #31506f;
+}
+
+.coupon-offer-note {
+  border-top: 1px solid #eef3f8;
+  margin-top: 2px;
+  padding-top: 7px;
+  color: #7a5360;
+}
+
+.coupon-box .coupon-remove-btn {
+  grid-column: 1 / -1;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #f3c8b9;
+  background: #fff8f5;
+  color: var(--flow-primary-strong);
+  box-shadow: none;
+}
+
+.coupon-applied-card {
+  grid-column: 1 / -1;
+  margin-top: 10px;
+  border: 1px solid #b9e7ce;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, #f4fff8, #ffffff);
+  box-shadow: 0 10px 24px rgba(31, 111, 76, 0.08);
+}
+
+.coupon-applied-card div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.coupon-applied-card span {
+  color: #407158;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.coupon-applied-card strong {
+  border: 1px dashed #7bc79d;
+  border-radius: 7px;
+  padding: 4px 8px;
+  background: #ffffff;
+  color: #137a43;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.coupon-applied-card p {
+  margin: 8px 0 0;
+  color: #1d5838;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.coupon-message {
+  grid-column: 1 / -1;
+  margin: 8px 0 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.738rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.coupon-message.success {
+  border: 1px solid #b9e7ce;
+  background: #f0fff6;
+  color: #137a43;
+}
+
+.coupon-message.error {
+  border: 1px solid #ffd0bf;
+  background: #fff4ed;
+  color: #b9381c;
+}
+
+.flow-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 19, 32, 0.68);
+  z-index: 1900;
+  display: grid;
+  place-items: center;
+  padding: 14px;
+}
+
+.flow-modal {
+  width: min(920px, 100%);
+  border-radius: 12px;
+  border: 1px solid #c8d5e5;
+  background: #f8f9fc;
+  box-shadow: 0 28px 50px rgba(7, 19, 34, 0.42);
+  overflow: hidden;
+}
+
+.flow-modal-header {
+  min-height: 50px;
+  padding: 0 12px;
+  background: linear-gradient(135deg, #1d6ed9, #1c6acf);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.flow-modal-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.215rem;
+  font-family: var(--flow-heading-font);
+}
+
+.flow-modal-header button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.flow-modal-grid {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(240px, 0.62fr);
+  gap: 12px;
+}
+
+.flow-modal-main,
+.flow-modal-side {
+  display: grid;
+  gap: 10px;
+}
+
+.detail-list {
+  display: grid;
+  gap: 7px;
+}
+
+.detail-list > div {
+  border: 1px solid #d1dae7;
+  border-radius: 8px;
+  min-height: 38px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #1d385c;
+}
+
+.flow-modal-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.flow-modal-actions button {
+  border: 0;
+  border-radius: 8px;
+  min-height: 40px;
+  background: #2064bc;
+  color: #ffffff;
+  font-size: 0.774rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.flow-modal-actions button.proceed {
+  background: linear-gradient(135deg, #1d6ed9, #1c68cc);
+}
+
+.flow-payment-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.72fr);
+  gap: 12px;
+}
+
+.flow-payment-main,
+.flow-payment-side {
+  display: grid;
+  gap: 12px;
+}
+
+.payment-method-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.payment-method-grid button {
+  border: 1px solid #c9d6e7;
+  border-radius: 9px;
+  min-height: 44px;
+  background: var(--flow-primary-soft, #fff0e9);
+  color: #233d5f;
+  font-size: 0.738rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.payment-method-grid button.active {
+  border-color: transparent;
+  background: linear-gradient(
+    135deg,
+    var(--flow-primary),
+    var(--flow-primary-strong)
+  );
+  color: #ffffff;
+}
+
+.payment-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.payment-form-grid label {
+  display: grid;
+  gap: 6px;
+}
+
+.payment-form-grid label span {
+  color: #223a59;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.payment-form-grid > label:first-child:last-child {
+  grid-column: span 2;
+}
+
+.summary-list p {
+  margin: 0;
+  color: #2c486c;
+  font-size: 0.81rem;
+  line-height: 1.5;
+}
+
+.flow-pay-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.flow-payment-success {
+  border: 1px solid #cad6e5;
+  border-radius: 14px;
+  background: #f5f8fc;
+  box-shadow: var(--flow-shadow-sm);
+  min-height: 280px;
+  padding: 22px;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.flow-payment-success svg {
+  color: #26538c;
+}
+
+.flow-payment-success h2 {
+  margin: 0;
+  color: #203a5c;
+  font-size: 1.26rem;
+  font-family: var(--flow-heading-font);
+}
+
+.flow-payment-success p {
+  margin: 0;
+  color: #263a53;
+}
+
+.flow-payment-success small {
+  color: #45556b;
+  font-size: 0.702rem;
+}
+
+.success-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.success-actions button {
+  border: 0;
+  border-radius: 9px;
+  min-height: 38px;
+  padding: 0 12px;
+  background: linear-gradient(
+    135deg,
+    var(--flow-primary),
+    var(--flow-primary-strong)
+  );
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bus-flow-page .spin {
+  animation: flow-spin 0.9s linear infinite;
+}
+
+@keyframes flow-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dashboard-aligned theme across seat, passenger, confirm, and payment steps */
+.bus-flow-summary-card,
+.bus-flow-seat-zone,
+.bus-flow-point-panel,
+.flow-card,
+.flow-modal,
+.flow-payment-success {
+  border-color: var(--flow-border);
+  box-shadow: var(--flow-shadow-sm);
+}
+
+.bus-flow-seat-zone,
+.bus-flow-point-panel,
+.flow-modal,
+.flow-payment-success {
+  background: var(--flow-surface-soft);
+}
+
+.bus-flow-fares,
+.bus-flow-seat-legend,
+.bus-flow-deck-card,
+.bus-flow-page .point-item,
+.detail-list > div,
+.ack-pay-strip,
+.payment-method-grid button {
+  border-color: #cedcee;
+  background: var(--flow-primary-soft, #fff0e9);
+}
+
+.bus-flow-summary-actions button,
+.bus-flow-page .point-tabs button,
+.bus-flow-fare-chips button {
+  border-color: #c7d7ed;
+  background: var(--flow-primary-soft);
+  color: #27548e;
+}
+
+.bus-flow-summary-actions button.active,
+.bus-flow-fare-chips button.active,
+.bus-flow-page .point-tabs button.active,
+.payment-method-grid button.active {
+  border-color: transparent;
+  background: linear-gradient(
+    135deg,
+    var(--flow-primary),
+    var(--flow-primary-strong)
+  );
+  color: #ffffff;
+}
+
+.bus-flow-page .point-item.selected {
+  border-color: var(--flow-primary, #f04423);
+  background: var(--flow-primary-soft, #fff0e9);
+}
+
+.bus-flow-page .point-item.selected i {
+  border-color: var(--flow-primary, #f04423);
+  background: var(--flow-primary, #f04423);
+}
+
+.selected-seat-summary h4,
+.selected-seat-summary strong,
+.fare-list .grand-total span,
+.fare-list .grand-total strong {
+  color: var(--flow-primary-strong, #df3f1f);
+}
+
+.flow-card > header,
+.flow-modal-header {
+  background: linear-gradient(
+    135deg,
+    var(--flow-primary),
+    var(--flow-primary-strong)
+  );
+  color: #ffffff;
+}
+
+.flow-modal-backdrop {
+  background: rgba(11, 22, 36, 0.58);
+}
+
+.flow-modal-header button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.16);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flow-continue-btn,
+.flow-pay-btn,
+.coupon-box button {
+  min-height: 44px;
+  background: linear-gradient(
+    135deg,
+    var(--flow-primary),
+    var(--flow-primary-strong)
+  );
+  font-size: 0.846rem;
+  font-weight: 700;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.flow-continue-btn:hover:not(:disabled),
+.flow-pay-btn:hover:not(:disabled),
+.coupon-box button:hover,
+.success-actions button:hover,
+.flow-modal-actions button:hover {
+  transform: translateY(-1px);
+}
+
+.flow-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.flow-modal-actions button {
+  min-height: 40px;
+  border-radius: 9px;
+  min-width: 132px;
+  padding: 0 14px;
+  border: 1px solid #c5d6ed;
+  background: var(--flow-primary-soft, #fff0e9);
+  color: #274c7c;
+  font-size: 0.747rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 14px rgba(25, 66, 120, 0.11);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.flow-modal-actions button.proceed {
+  border: 0;
+  background: linear-gradient(
+    135deg,
+    var(--flow-primary),
+    var(--flow-primary-strong)
+  );
+  color: #ffffff;
+}
+
+.ack-checkbox input {
+  accent-color: var(--flow-primary);
+}
+
+.ack-checkbox span {
+  color: #405877;
+}
+
+.bus-flow-page button:focus-visible,
+.bus-flow-page input:focus-visible,
+.bus-flow-page select:focus-visible {
+  outline: 2px solid var(--flow-focus);
+  outline-offset: 1px;
+}
+
+@media (max-width: 1300px) {
+  .bus-flow-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bus-flow-summary-grid article {
+    border-right: 0;
+    border-bottom: 1px solid #e5ecf5;
+  }
+
+  .bus-flow-summary-grid article:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+
+  @media (max-width: 1100px) {
+  .bus-flow-seat-layout,
+  .bus-passenger-layout,
+  .flow-payment-layout {
+    grid-template-columns: 1fr;
+  }
+  }
+
+  .bus-flow-point-panel h3 {
+    font-size: 1.215rem;
+  }
+}
+
+@media (max-width: 980px) {
+  .bus-flow-overview-content {
+    min-height: 126px;
+    padding: 14px;
+  }
+
+  .bus-flow-seat-top {
+    grid-template-columns: 1fr;
+  }
+
+  .bus-flow-seat-legend {
+    grid-template-columns: 1fr;
+  }
+
+  .bus-flow-sleeper-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .bus-flow-deck-card {
+    width: min(430px, 100%);
+  }
+
+  .bus-flow-deck-card > aside {
+    min-height: 32px;
+  }
+
+  .bus-journey-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bus-journey-grid .journey-point {
+    grid-column: span 2;
+  }
+
+  .passenger-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .contact-grid,
+  .payment-form-grid,
+  .flow-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .flow-modal-actions {
+    justify-content: stretch;
+  }
+
+  .flow-modal-actions button {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .bus-flow-page {
+    padding: 8px 4px 16px;
+  }
+
+  .bus-flow-overview-content {
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: auto;
+    gap: 10px;
+  }
+
+  .bus-flow-overview-logo-wrap {
+    width: 58px;
+    height: 58px;
+    border-radius: 12px;
+  }
+
+  .bus-flow-overview-copy h3 {
+    font-size: 1.008rem;
+  }
+
+  .bus-flow-summary-actions {
+    justify-content: stretch;
+  }
+
+  .bus-flow-summary-actions button {
+    flex: 1 1 calc(50% - 8px);
+  }
+
+  .bus-flow-seater-row {
+    grid-template-columns: repeat(2, minmax(0, .5fr)) 22px repeat(
+        2,
+        minmax(0, 1fr)
+      );
+    gap: 6px;
+  }
+
+  .bus-flow-sleeper-row {
+    grid-template-columns: minmax(54px, 1fr) 18px repeat(2, minmax(54px, 1fr));
+  }
+
+  .bus-flow-hybrid-seater-row {
+    grid-template-columns: minmax(48px, 1fr) 18px repeat(2, minmax(48px, 1fr));
+  }
+
+  .bus-flow-sleeper-row .bus-flow-seat:nth-child(n + 4) {
+    grid-column: span 1;
+  }
+
+  .bus-flow-page .point-tabs {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .selected-seat-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .flow-continue-btn.align-right {
+    width: 100%;
+  }
+}
+
+/* Warm public booking theme */
+.bus-flow-summary-card,
+.bus-flow-seat-zone,
+.bus-flow-point-panel,
+.flow-card,
+.flow-modal,
+.flow-payment-success {
+  border-color: var(--flow-border);
+  box-shadow: var(--flow-shadow-sm);
+}
+
+.bus-flow-summary-card,
+.bus-flow-point-panel,
+.flow-card,
+.flow-modal,
+.flow-payment-success {
+  background: rgba(255, 250, 246, 0.96);
+}
+
+.bus-flow-seat-zone {
+  background: #f8fbff;
+}
+
+.bus-flow-fares,
+.bus-flow-seat-legend,
+.bus-flow-deck-card,
+.bus-flow-page .point-item,
+.detail-list > div,
+.ack-pay-strip,
+.payment-method-grid button {
+  border-color: #f3cbbf;
+  background: #fffaf6;
+}
+
+.bus-flow-page .point-item.selected {
+  border-color: var(--flow-primary);
+  background: #fff4ed;
+}
+
+.bus-flow-page .point-item.selected i {
+  border-color: var(--flow-primary);
+  background: var(--flow-primary);
+}
+
+.bus-flow-summary-actions button,
+.bus-flow-page .point-tabs button,
+.bus-flow-fare-chips button {
+  border-color: #f2cbbf;
+  background: #ffffff;
+  color: #1f2a44;
+}
+
+.bus-flow-summary-actions button.active,
+.bus-flow-fare-chips button.active,
+.bus-flow-page .point-tabs button.active,
+.payment-method-grid button.active,
+.flow-continue-btn,
+.flow-pay-btn,
+.coupon-box button,
+.success-actions button {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--flow-primary), var(--flow-primary-strong));
+  color: #ffffff;
+  box-shadow: 0 14px 28px rgba(240, 68, 35, 0.2);
+}
+
+.bus-flow-page .point-item.selected,
+.bus-flow-page .point-tabs button.active {
+  border-color: var(--flow-primary);
+  background: #fff4ed;
+}
+
+.bus-flow-page .point-item.selected i {
+  border-color: var(--flow-primary);
+  background: var(--flow-primary);
+}
+
+.bus-flow-page .point-tabs button {
+  border-color: rgba(240, 68, 35, 0.38);
+  background: #fffaf7;
+  color: var(--flow-primary-strong);
+  box-shadow: none;
+}
+
+.bus-flow-page .point-tabs button.active {
+  border-color: var(--flow-primary);
+  background: linear-gradient(135deg, var(--flow-primary), var(--flow-primary-strong));
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(240, 68, 35, 0.18);
+}
+
+.bus-flow-seat.status-selected {
+  border-color: var(--flow-primary);
+  background: #fff1e9;
+  color: #b9381c;
+}
+
+.bus-flow-seat.status-selected-male {
+  border-color: #2f74ed;
+  background: #eef5ff;
+  color: #1559c7;
+}
+
+.bus-flow-seat.status-selected-female,
+.bus-flow-seat.status-booked-female {
+  border-color: var(--theme-pink, #ec4b9a);
+  background: #fff0f7;
+  color: #b51f70;
+}
+
+.bus-flow-seat.status-female-adjacent:not(.status-booked):not(.status-selected) {
+  border-color: var(--theme-pink, #ec4b9a);
+  background: #ffffff;
+  box-shadow: inset 0 0 0 2px rgba(236, 75, 154, 0.24);
+  color: #b51f70;
+}
+
+.seat-badge.booked.female-booked {
+  background: #ffd5e9;
+  color: #b51f70;
+  border-color: var(--theme-pink, #ec4b9a);
+}
+
+.bus-flow-driver-cabin,
+.bus-flow-deck-card > aside {
+  border-color: #ffd0bf;
+  background: #fff0e9;
+  color: var(--flow-primary-strong);
+}
+
+.bus-flow-deck-card::before {
+  color: #b95f42;
+}
+
+.flow-error {
+  border-color: #ffd0bf;
+  background: #fff4ed;
+  color: #b9381c;
+}
+
+/* Product seat-map layout */
+.bus-flow-page .bus-flow-seat-layout {
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 12px;
+}
+
+.bus-flow-page .bus-flow-seat-zone {
+  min-width: 0;
+  border-color: #eceff4;
+  border-radius: 18px;
+  background: #f6f7f9;
+  box-shadow: 0 18px 38px rgba(17, 24, 39, 0.08);
+}
+
+.bus-flow-page .bus-flow-fares,
+.bus-flow-page .bus-flow-seat-legend {
+  border-color: #eceff4;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.bus-flow-page .bus-flow-fares h3 {
+  color: #111827;
+  font-size: 1rem;
+  letter-spacing: 0;
+}
+
+.bus-flow-page .bus-flow-fare-chips button {
+  border-color: #e5e7eb;
+  border-radius: 10px;
+  min-height: 34px;
+  background: #ffffff;
+  color: #374151;
+}
+
+.bus-flow-page .bus-flow-fare-chips button.active {
+  border-color: #f4b6aa;
+  background: #fff1ee;
+  color: #c23d22;
+  box-shadow: none;
+}
+
+.bus-flow-page .bus-flow-sleeper-layout {
+  grid-template-columns: repeat(2, max-content);
+  gap: 12px;
+  align-items: start;
+  overflow-x: auto;
+}
+
+.bus-flow-page .bus-flow-deck-card,
+.bus-flow-page .bus-flow-sleeper-deck {
+  width: max-content;
+  min-width: 272px;
+  max-width: none;
+  border-color: #eceff4;
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 58px 18px 18px;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.06);
+  overflow: hidden;
+}
+
+.bus-flow-page .bus-flow-deck-card::before {
+  top: 24px;
+  left: 18px;
+  color: #9ca3af;
+  font-size: 0.62rem;
+}
+
+.bus-flow-page .bus-flow-deck-label,
+.bus-flow-page .bus-flow-driver-cabin,
+.bus-flow-page .bus-flow-deck-card > aside {
+  border-color: #e5e7eb;
+  border-radius: 999px;
+  min-height: 34px;
+  background: #ffffff;
+  color: #111827;
+  font-size: 0.7rem;
+  font-weight: 800;
+  box-shadow: 0 6px 14px rgba(17, 24, 39, 0.05);
+}
+
+.bus-flow-page .bus-flow-deck-label {
+  left: 76px;
+}
+
+.bus-flow-page .bus-flow-driver-cabin {
+  right: 16px;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.bus-flow-page .bus-flow-seater-row {
+  grid-template-columns: repeat(2, 42px) 34px repeat(2, 42px);
+  gap: 7px;
+}
+
+.bus-flow-page .bus-flow-sleeper-row {
+  grid-template-columns: 62px 24px 62px 62px;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+.bus-flow-page .bus-flow-hybrid-seater-row {
+  grid-template-columns: 48px 34px 48px 48px;
+  gap: 7px;
+}
+
+.bus-flow-page .bus-flow-seat {
+  border-color: #d9dde4;
+  border-radius: 9px;
+  background: #f9fafb;
+  color: #4b5563;
+  box-shadow: inset 0 -3px 0 rgba(17, 24, 39, 0.08);
+}
+
+.bus-flow-page .bus-flow-seat--seater {
+  width: 42px;
+  min-height: 44px;
+}
+
+.bus-flow-page .bus-flow-hybrid-seater-row .bus-flow-seat--seater {
+  width: 48px;
+  min-height: 46px;
+}
+
+.bus-flow-page .bus-flow-seat--sleeper {
+  width: 62px;
+  min-height: 96px;
+}
+
+.bus-flow-page .bus-flow-seat.status-available {
+  border-color: #d9dde4;
+  background: #f9fafb;
+}
+
+.bus-flow-page .bus-flow-seat.status-selected {
+  border-color: var(--flow-primary);
+  background: #ffffff;
+  color: #0f7a45;
+  box-shadow:
+    inset 0 0 0 1px #21a366,
+    inset 0 -3px 0 rgba(33, 163, 102, 0.16);
+}
+
+.bus-flow-page .bus-flow-seat.status-selected-male {
+  border-color: #2f74ed;
+  background: #eef5ff;
+  color: #1559c7;
+}
+
+.bus-flow-page .bus-flow-seat.status-selected-female {
+  border-color: #ec4b9a;
+  background: #fff0f7;
+  color: #b51f70;
+}
+
+.bus-flow-page .bus-flow-seat.status-booked {
+  border-color: #d1d5db;
+  background: #e5e7eb;
+  color: #8b95a1;
+  box-shadow: inset 0 -3px 0 rgba(17, 24, 39, 0.08);
+}
+
+.bus-flow-page .seat-fare {
+  color: #111827;
+  font-size: 0.58rem;
+  font-weight: 800;
+}
+
+.bus-flow-page .bus-flow-point-panel {
+  border-color: #eceff4;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 18px 38px rgba(17, 24, 39, 0.08);
+}
+
+.bus-flow-page .bus-flow-point-panel h3 {
+  border-color: #eceff4;
+  border-radius: 14px;
+  background: #f9fafb;
+  color: #111827;
+  font-size: 1rem;
+}
+
+@media (max-width: 1100px) {
+  .bus-flow-page .bus-flow-seat-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .bus-flow-page .bus-flow-sleeper-layout {
+    grid-template-columns: repeat(2, max-content);
+  }
+
+  .bus-flow-page .bus-flow-deck-card,
+  .bus-flow-page .bus-flow-sleeper-deck {
+    width: max-content;
+  }
+}
+
+/* Unified orange booking flow theme */
+.bus-flow-page {
+  --flow-bg: var(--theme-page, #fff7f2);
+  --flow-surface: var(--theme-surface, #ffffff);
+  --flow-surface-soft: var(--theme-surface-warm, #fffaf6);
+  --flow-border: var(--theme-border, #f2cbbf);
+  --flow-text: var(--theme-text, #111827);
+  --flow-muted: var(--theme-muted, #64748b);
+  --flow-primary: var(--theme-primary, #f04423);
+  --flow-primary-strong: var(--theme-primary-strong, #df3f1f);
+  --flow-accent: var(--theme-primary, #f04423);
+  --flow-accent-strong: var(--theme-primary-strong, #df3f1f);
+  --flow-focus: rgba(240, 68, 35, 0.18);
+}
+
+.bus-flow-summary-card,
+.bus-flow-seat-zone,
+.bus-flow-point-panel,
+.flow-card,
+.flow-modal,
+.flow-payment-success {
+  border-color: var(--flow-border);
+  box-shadow: var(--theme-shadow-sm, 0 10px 24px rgba(125, 59, 31, 0.08));
+}
+
+.bus-flow-duration svg,
+.bus-flow-info-btn,
+.bus-flow-summary-grid strong,
+.bus-flow-page .point-tabs button,
+.bus-flow-page .point-item.selected small,
+.selected-seat-summary strong,
+.fare-list .grand-total span,
+.fare-list .grand-total strong {
+  color: var(--flow-primary-strong);
+}
+
+.bus-flow-info-btn,
+.bus-flow-fare-chips button.active,
+.bus-flow-summary-actions button.active,
+.bus-flow-page .point-tabs button.active,
+.payment-method-grid button.active,
+.flow-continue-btn,
+.flow-pay-btn,
+.coupon-box button,
+.success-actions button {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--flow-primary), var(--flow-primary-strong));
+  color: #ffffff;
+  box-shadow: 0 14px 28px rgba(240, 68, 35, 0.2);
+}
+
+.bus-flow-page .point-item.selected {
+  border-color: var(--flow-primary);
+  background: #fff4ed;
+}
+
+.bus-flow-page .point-item.selected i {
+  border-color: var(--flow-primary);
+  background: var(--flow-primary);
+}
+
+.bus-flow-page .point-tabs button {
+  border-color: rgba(240, 68, 35, 0.38);
+  background: #fffaf7;
+  color: var(--flow-primary-strong);
+  box-shadow: none;
+}
+
+.bus-flow-page .point-tabs button.active {
+  border-color: var(--flow-primary);
+  background: linear-gradient(135deg, var(--flow-primary), var(--flow-primary-strong));
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(240, 68, 35, 0.18);
+}
+
+.bus-flow-seat.status-selected {
+  border-color: var(--flow-primary);
+  background: #fff1e9;
+  color: #b9381c;
+}
+/* ── Passenger Mode Toggle (Existing Traveler / Add New Traveler) ── */
+
+.passenger-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 8px 0 14px;
+}
+
+/* Base: inactive = orange text link, no background */
+.pmode-btn {
+  border: none;
+  background: transparent;
+  color: var(--flow-primary, #f05a28);
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: var(--flow-body-font);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.pmode-btn:hover:not(.pmode-btn--active) {
+  opacity: 0.75;
+}
+
+/* Active: orange filled pill */
+.pmode-btn--active {
+  background: linear-gradient(135deg, var(--flow-primary, #f05a28), var(--flow-primary-strong, #df3f1f));
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-size: 0.855rem;
+  box-shadow: 0 6px 18px rgba(240, 90, 40, 0.28);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pmode-btn--active:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(240, 90, 40, 0.34);
+}
+
+/* Existing traveler dropdown */
+.passenger-existing-wrap {
+  display: grid;
+  gap: 10px;
+}
+
+.passenger-existing-select {
+  width: 100%;
+  border: 1px solid #f2cbbf;
+  border-radius: 9px;
+  min-height: 42px;
+  padding: 0 12px;
+  background: #fffaf6;
+  color: #223b5b;
+  font-size: 0.83rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.passenger-existing-select:focus {
+  outline: 2px solid rgba(240, 90, 40, 0.22);
+  border-color: var(--flow-primary, #f05a28);
+}
+
+/* Readable coupon cards: keep theme accents without flooding the content */
+.coupon-box .coupon-offer-card,
+.coupon-box .coupon-offer-card:disabled {
+  border: 1px solid #f2d4c8;
+  border-radius: 12px;
+  min-height: auto;
+  padding: 14px;
+  background: #fffaf7;
+  color: #111827;
+  box-shadow: 0 12px 24px rgba(125, 59, 31, 0.08);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 12px;
+  text-align: left;
+}
+
+.coupon-box .coupon-offer-card:hover,
+.coupon-box .coupon-offer-card.selected {
+  border-color: var(--flow-primary);
+  background: #fff4ed;
+  color: #111827;
+  box-shadow: 0 16px 30px rgba(240, 68, 35, 0.14);
+}
+
+.coupon-box .coupon-offer-card .coupon-offer-value {
+  color: #b9381c;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.coupon-box .coupon-offer-card strong {
+  justify-self: end;
+  align-self: start;
+  border: 1px dashed #ef9d86;
+  border-radius: 8px;
+  padding: 5px 10px;
+  background: #ffffff;
+  color: #b9381c;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.coupon-box .coupon-offer-card .coupon-offer-meta,
+.coupon-box .coupon-offer-card .coupon-offer-foot,
+.coupon-box .coupon-offer-card .coupon-offer-note {
+  grid-column: 1 / -1;
+  color: #374151;
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.coupon-box .coupon-offer-card .coupon-offer-foot {
+  color: #1f3a5f;
+}
+
+.coupon-box .coupon-offer-card .coupon-offer-note {
+  border-top: 1px solid #f1d8ce;
+  margin-top: 4px;
+  padding-top: 8px;
+  color: #5b6472;
+}
+
+.coupon-box .coupon-offer-card:disabled {
+  cursor: not-allowed;
+  opacity: 0.74;
+}
+
+/* Professional seat-layout page polish */
+.bus-flow-page {
+  padding: 16px 10px 28px;
+}
+
+.bus-flow-shell {
+  max-width: 1480px;
+  gap: 16px;
+}
+
+.bus-flow-summary-card {
+  border: 1px solid rgba(240, 90, 40, 0.2);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 16px 40px rgba(125, 59, 31, 0.1);
+  overflow: hidden;
+}
+
+.bus-flow-overview-banner {
+  min-height: 168px;
+  border-bottom: 0;
+  background: var(--flow-primary-strong, #df3f1f);
+}
+
+.bus-flow-overview-overlay {
+  background:
+    linear-gradient(90deg, rgba(223, 63, 31, 0.96), rgba(240, 68, 35, 0.82)),
+    linear-gradient(135deg, rgba(240, 90, 40, 0.12), transparent 48%);
+}
+
+.bus-flow-overview-content {
+  min-height: 168px;
+  padding: 24px 28px;
+  gap: 18px;
+}
+
+.bus-flow-overview-logo-wrap {
+  width: 86px;
+  height: 86px;
+  border-radius: 18px;
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 18px 36px rgba(8, 20, 37, 0.24);
+}
+
+.bus-flow-overview-copy p {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+}
+
+.bus-flow-overview-copy h3 {
+  font-size: clamp(1.45rem, 1.9vw, 2rem);
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.bus-flow-overview-copy span {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.bus-flow-summary-grid {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 1.6fr) repeat(3, minmax(130px, 1fr)) minmax(150px, 0.9fr) minmax(150px, 0.9fr);
+  gap: 0;
+  border-bottom: 1px solid #f1e2dc;
+  background: #fffaf7;
+}
+
+.bus-flow-summary-grid article {
+  min-height: 112px;
+  border-right: 1px solid #f1e2dc;
+  border-bottom: 0;
+  padding: 18px 22px;
+  align-content: center;
+  gap: 6px;
+}
+
+.bus-flow-summary-grid article:last-child {
+  border-right: 0;
+}
+
+.bus-flow-summary-grid h2,
+.bus-flow-summary-grid strong {
+  color: #10233f;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.bus-flow-summary-grid h2 {
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.bus-flow-summary-grid p,
+.bus-flow-summary-grid span,
+.bus-flow-summary-grid small {
+  color: #3d5270;
+  line-height: 1.35;
+}
+
+.bus-flow-summary-grid p {
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.bus-flow-summary-grid small {
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.bus-flow-summary-grid article:nth-child(2) strong,
+.bus-flow-summary-grid article:nth-child(4) strong,
+.bus-flow-summary-grid article:nth-child(5) strong {
+  color: var(--flow-primary-strong);
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.bus-flow-duration {
+  justify-items: center;
+  text-align: center;
+}
+
+.bus-flow-duration svg {
+  color: var(--flow-primary-strong);
+  width: 22px;
+  height: 22px;
+}
+
+.bus-flow-duration span {
+  color: #10233f;
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.bus-flow-summary-actions {
+  min-height: 72px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  background: #ffffff;
+}
+
+.bus-flow-summary-actions button {
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid #f1c8bb;
+  background: #ffffff;
+  color: #10233f;
+  padding: 0 18px;
+  font-size: 0.82rem;
+  font-weight: 900;
+  box-shadow: 0 8px 18px rgba(125, 59, 31, 0.06);
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.bus-flow-summary-actions button:hover {
+  transform: translateY(-1px);
+  border-color: var(--flow-primary);
+  box-shadow: 0 12px 22px rgba(125, 59, 31, 0.12);
+}
+
+.bus-flow-summary-actions button.active {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--flow-primary), var(--flow-primary-strong));
+  color: #ffffff;
+  box-shadow: 0 14px 26px rgba(240, 68, 35, 0.22);
+}
+
+.bus-flow-seat-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 360px);
+  gap: 18px;
+  align-items: start;
+}
+
+.bus-flow-page .bus-flow-seat-zone,
+.bus-flow-page .bus-flow-point-panel {
+  border: 1px solid rgba(240, 90, 40, 0.16);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 18px 38px rgba(125, 59, 31, 0.08);
+}
+
+.bus-flow-page .bus-flow-seat-zone {
+  padding: 18px;
+}
+
+.bus-flow-seat-top {
+  gap: 14px;
+  align-items: stretch;
+}
+
+.bus-flow-page .bus-flow-fares,
+.bus-flow-page .bus-flow-seat-legend {
+  border-color: #f1e2dc;
+  border-radius: 14px;
+  background: #fffaf7;
+}
+
+.bus-flow-page .bus-flow-fares {
+  padding: 14px;
+}
+
+.bus-flow-page .bus-flow-fares h3,
+.bus-flow-page .bus-flow-point-panel h3 {
+  color: #10233f;
+  font-weight: 900;
+}
+
+.bus-flow-page .bus-flow-fare-chips {
+  gap: 8px;
+}
+
+.bus-flow-page .bus-flow-fare-chips button {
+  min-height: 36px;
+  border-radius: 999px;
+  border-color: #efd8cf;
+  background: #ffffff;
+  color: #10233f;
+  padding: 0 14px;
+  font-weight: 900;
+}
+
+.bus-flow-page .bus-flow-fare-chips button.active {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--flow-primary), var(--flow-primary-strong));
+  color: #ffffff;
+}
+
+.bus-flow-page .bus-flow-seat-legend {
+  padding: 14px;
+}
+
+.bus-flow-page .legend {
+  color: #31435e;
+  font-weight: 800;
+}
+
+.bus-flow-page .bus-flow-deck-card,
+.bus-flow-page .bus-flow-sleeper-deck {
+  border-color: #f0e2dc;
+  background: #ffffff;
+  box-shadow: 0 14px 28px rgba(17, 24, 39, 0.06);
+}
+
+.bus-flow-page .bus-flow-point-panel {
+  padding: 16px;
+}
+
+.bus-flow-page .bus-flow-point-panel h3 {
+  margin: 0 0 14px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 1.08rem;
+}
+
+.bus-flow-page .point-tabs {
+  padding: 4px;
+  border-radius: 12px;
+  background: #fff3ed;
+  gap: 4px;
+}
+
+.bus-flow-page .point-tabs button {
+  min-height: 40px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #9a3b25;
+  font-weight: 900;
+}
+
+.bus-flow-page .point-tabs button.active {
+  background: #ffffff;
+  color: var(--flow-primary-strong);
+  box-shadow: 0 8px 18px rgba(125, 59, 31, 0.1);
+}
+
+.bus-flow-page .point-list {
+  margin-top: 14px;
+}
+
+.bus-flow-page .point-item {
+  border-color: #f0e2dc;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 14px;
+  box-shadow: 0 8px 16px rgba(125, 59, 31, 0.04);
+}
+
+.bus-flow-page .point-item.selected {
+  border-color: var(--flow-primary);
+  background: #fff5ef;
+}
+
+@media (max-width: 1180px) {
+  .bus-flow-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .bus-flow-summary-grid article {
+    border-bottom: 1px solid #f1e2dc;
+  }
+
+  .bus-flow-summary-grid article:nth-child(3n) {
+    border-right: 0;
+  }
+
+  .bus-flow-summary-grid article:nth-last-child(-n + 3) {
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 820px) {
+  .bus-flow-page {
+    padding: 10px 8px 22px;
+  }
+
+  .bus-flow-overview-content {
+    min-height: 150px;
+    padding: 18px;
+  }
+
+  .bus-flow-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bus-flow-summary-grid article,
+  .bus-flow-summary-grid article:nth-child(3n),
+  .bus-flow-summary-grid article:nth-last-child(-n + 3) {
+    min-height: 86px;
+    border-right: 0;
+    border-bottom: 1px solid #f1e2dc;
+  }
+
+  .bus-flow-summary-grid article:last-child {
+    border-bottom: 0;
+  }
+
+  .bus-flow-summary-actions {
+    justify-content: stretch;
+  }
+
+  .bus-flow-summary-actions button {
+    flex: 1 1 100%;
+  }
+}
+
+/* Coupon offers panel */
+.bus-flow-page .coupon-offers-card {
+  border: 0;
+  border-radius: 26px;
+  background: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 12px 34px rgba(17, 24, 39, 0.1);
+}
+
+.bus-flow-page .coupon-offers-card .coupon-box {
+  padding: 24px 14px 18px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  overflow: hidden;
+}
+
+.bus-flow-page .coupon-box-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.bus-flow-page .coupon-box-title h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 1.25rem;
+  line-height: 1.1;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.bus-flow-page .coupon-box-icon,
+.bus-flow-page .coupon-entry-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 2px dotted rgba(255, 255, 255, 0.9);
+  background: #2fa66a;
+  color: #ffffff;
+  font-size: 0.86rem;
+  font-weight: 900;
+  box-shadow: 0 3px 8px rgba(47, 166, 106, 0.28);
+}
+
+.bus-flow-page .coupon-entry-icon {
+  width: 25px;
+  height: 25px;
+  background: #ffffff;
+  border-color: #6b7280;
+  color: #6b7280;
+  box-shadow: none;
+}
+
+.bus-flow-page .coupon-entry-row {
+  min-height: 72px;
+  border: 1.4px solid #1f2937;
+  border-radius: 15px;
+  background: #ffffff;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.bus-flow-page .coupon-entry-row.has-code {
+  border-color: #c2535e;
+}
+
+.bus-flow-page .coupon-box .coupon-entry-row input {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  color: #4b5563;
+  font-size: 1.05rem;
+  font-weight: 700;
+  outline: 0;
+  box-shadow: none;
+}
+
+.bus-flow-page .coupon-box .coupon-entry-row input::placeholder {
+  color: #5f6674;
+  opacity: 1;
+}
+
+.bus-flow-page .coupon-box .coupon-entry-row button {
+  min-width: 72px;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #c2535e;
+  font-size: 1.02rem;
+  font-weight: 700;
+  text-align: right;
+  text-transform: none;
+}
+
+.bus-flow-page .coupon-box .coupon-entry-row button:hover {
+  background: transparent;
+  box-shadow: none;
+  color: #a93e4a;
+  transform: none;
+}
+
+.bus-flow-page .coupon-message {
+  margin: -9px 0 2px 22px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #b03643;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.bus-flow-page .coupon-message.success {
+  color: #147d4b;
+}
+
+.bus-flow-page .coupon-message.error {
+  color: #b03643;
+}
+
+.bus-flow-page .coupon-offer-list {
+  width: 100%;
+  margin-top: 10px;
+  padding: 0 72px 4px 0;
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  touch-action: pan-x;
+  cursor: grab;
+}
+
+.bus-flow-page .coupon-offer-list:active {
+  cursor: grabbing;
+}
+
+.bus-flow-page .coupon-offer-list::-webkit-scrollbar {
+  display: none;
+}
+
+.bus-flow-page .coupon-box .coupon-offer-card,
+.bus-flow-page .coupon-box .coupon-offer-card:disabled {
+  flex: 0 0 84%;
+  min-height: 138px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #111827;
+  padding: 24px 22px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px;
+  gap: 16px;
+  align-items: center;
+  text-align: left;
+  box-shadow: none;
+  scroll-snap-align: start;
+}
+
+.bus-flow-page .coupon-box .coupon-offer-card:hover,
+.bus-flow-page .coupon-box .coupon-offer-card.selected {
+  border-color: #d6dbe3;
+  background: #ffffff;
+  color: #111827;
+  box-shadow: none;
+  transform: none;
+}
+
+.bus-flow-page .coupon-card-copy {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.bus-flow-page .coupon-card-copy strong {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  justify-self: start;
+  background: transparent;
+  color: #111827;
+  font-size: 1.08rem;
+  line-height: 1.1;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.bus-flow-page .coupon-card-copy span {
+  color: #167445;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.bus-flow-page .coupon-card-radio {
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid #9ca3af;
+  border-radius: 50%;
+  background: #ffffff;
+  justify-self: end;
+}
+
+.bus-flow-page .coupon-offer-card.selected .coupon-card-radio {
+  border: 8px solid #ffffff;
+  outline: 2px solid #d9565f;
+  background: #d9565f;
+}
+
+.bus-flow-page .coupon-offer-state {
+  flex: 0 0 calc(100% - 110px);
+  min-height: 110px;
+  border: 1px dashed #d1d5db;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  color: #5b6472;
+  font-weight: 800;
+}
+
+.bus-flow-page .coupon-offer-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.bus-flow-page .coupon-offer-dots button {
+  width: 8px;
+  height: 8px;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 999px;
+  padding: 0;
+  background: #e5e7eb;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.bus-flow-page .coupon-offer-dots button.active {
+  width: 12px;
+  background: #d9565f;
+}
+
+.bus-flow-page .coupon-applied-card {
+  border: 1px solid #cce9d7;
+  border-radius: 14px;
+  background: #f4fff8;
+  padding: 12px 14px;
+  box-shadow: none;
+}
+
+.bus-flow-page .coupon-applied-card div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.bus-flow-page .coupon-applied-card span,
+.bus-flow-page .coupon-applied-card p {
+  color: #167445;
+}
+
+.bus-flow-page .coupon-applied-card strong {
+  color: #0f6a3d;
+}
+
+/* Final AbhiBus-style coupon overrides: keep this panel away from the orange theme. */
+.bus-flow-page .coupon-offers-card,
+.bus-flow-page .coupon-offers-card * {
+  letter-spacing: 0;
+}
+
+.bus-flow-page .coupon-offers-card {
+  border: 0 !important;
+  border-radius: 26px !important;
+  background: #ffffff !important;
+  box-shadow: 0 10px 28px rgba(17, 24, 39, 0.08) !important;
+}
+
+.bus-flow-page .coupon-offers-card .coupon-box {
+  background: #ffffff !important;
+  padding: 26px 14px 20px !important;
+  gap: 18px !important;
+}
+
+.bus-flow-page .coupon-box-title h3 {
+  color: #050b18 !important;
+  font-size: 1.3rem !important;
+  font-weight: 900 !important;
+}
+
+.bus-flow-page .coupon-box-icon {
+  width: 32px !important;
+  height: 32px !important;
+  background: #239b62 !important;
+  color: #ffffff !important;
+  border: 2px dotted #d7f5e5 !important;
+}
+
+.bus-flow-page .coupon-entry-row {
+  min-height: 72px !important;
+  border: 1.5px solid #1f2937 !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.bus-flow-page .coupon-entry-row.has-code {
+  border-color: #c65662 !important;
+}
+
+.bus-flow-page .coupon-entry-icon {
+  background: #ffffff !important;
+  border: 2px dotted #6f7784 !important;
+  color: #6f7784 !important;
+}
+
+.bus-flow-page .coupon-box .coupon-entry-row input {
+  background: transparent !important;
+  color: #515b6b !important;
+  font-size: 1.04rem !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+
+.bus-flow-page .coupon-box .coupon-entry-row button {
+  width: auto !important;
+  min-width: 62px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: #c65360 !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  text-align: right !important;
+  text-transform: none !important;
+}
+
+.bus-flow-page .coupon-box .coupon-entry-row button:hover,
+.bus-flow-page .coupon-box .coupon-entry-row button:focus {
+  background: transparent !important;
+  background-image: none !important;
+  color: #b34752 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.bus-flow-page .coupon-offer-list {
+  width: 100% !important;
+  padding: 0 82px 4px 0 !important;
+  gap: 14px !important;
+  scroll-behavior: smooth;
+}
+
+.bus-flow-page .coupon-box .coupon-offer-card,
+.bus-flow-page .coupon-box .coupon-offer-card:disabled,
+.bus-flow-page .coupon-box .coupon-offer-card:hover,
+.bus-flow-page .coupon-box .coupon-offer-card.selected {
+  flex: 0 0 84% !important;
+  border: 1px solid #e1e5eb !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.bus-flow-page .coupon-card-copy strong {
+  color: #111827 !important;
+  background: transparent !important;
+}
+
+.bus-flow-page .coupon-card-copy span {
+  color: #147846 !important;
+}
+
+.bus-flow-page .coupon-card-radio {
+  background: #ffffff !important;
+  border-color: #9ba3af !important;
+}
+
+.bus-flow-page .coupon-offer-card.selected .coupon-card-radio {
+  background: #cf525d !important;
+  border: 8px solid #ffffff !important;
+  outline: 2px solid #cf525d !important;
+}
+
+.bus-flow-page .coupon-offer-dots button {
+  background: #e5e7eb !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.bus-flow-page .coupon-offer-dots button.active {
+  background: #db5a62 !important;
+}
+
+/* Top-view deck layout: lower deck first, upper deck second */
+.bus-flow-page .bus-flow-sleeper-layout {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-top: 16px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 18px !important;
+  overflow: visible !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-deck {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 26px 28px 24px 132px !important;
+  border: 2px solid #d8dee8 !important;
+  border-radius: 26px !important;
+  background:
+    linear-gradient(90deg, #edf5ff 0 84px, transparent 84px),
+    #ffffff !important;
+  box-shadow: inset 0 0 0 1px #f3f5f8, 0 16px 30px rgba(17, 24, 39, 0.06) !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-deck::before {
+  content: none !important;
+}
+
+.bus-flow-horizontal-rail {
+  position: absolute;
+  inset: 28px auto 24px 24px;
+  width: 74px;
+  display: grid;
+  grid-template-rows: 96px 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.bus-flow-page .bus-flow-horizontal-driver,
+.bus-flow-page .bus-flow-horizontal-deck-label {
+  position: static !important;
+  width: auto !important;
+  min-height: 0 !important;
+  border: 1px solid #dce4ee !important;
+  border-radius: 28px !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: 0 8px 18px rgba(17, 24, 39, 0.05) !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 0.74rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  text-transform: uppercase !important;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.bus-flow-page .bus-flow-horizontal-deck-label {
+  color: #10233f !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-track {
+  width: max-content !important;
+  min-width: 100% !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  align-items: start !important;
+  gap: 14px !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-group {
+  width: max-content !important;
+  min-width: 100% !important;
+  display: grid !important;
+  grid-auto-flow: column !important;
+  grid-auto-columns: max-content !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-aisle {
+  width: 100%;
+  min-width: 100%;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #8794a6;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.bus-flow-page .bus-flow-horizontal-aisle::after {
+  content: "";
+  flex: 1;
+  border-top: 2px dashed #c8d2df;
+}
+
+.bus-flow-page .bus-flow-horizontal-deck .bus-flow-seat-gap {
+  width: 56px !important;
+  min-height: 54px !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-deck .bus-flow-seat {
+  flex: none !important;
+  border: 2px solid #42b48c !important;
+  border-radius: 13px !important;
+  background: #eefcf5 !important;
+  color: #0f6f55 !important;
+  box-shadow: inset 0 0 0 3px rgba(66, 180, 140, 0.14), 0 8px 16px rgba(36, 126, 93, 0.08) !important;
+  font-weight: 900 !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-deck .bus-flow-seat--seater {
+  width: 56px !important;
+  min-height: 58px !important;
+  aspect-ratio: auto !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-deck .bus-flow-seat--sleeper {
+  width: 120px !important;
+  min-height: 68px !important;
+  border-radius: 13px !important;
+  justify-content: center !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-deck .bus-flow-seat--sleeper::after {
+  left: auto !important;
+  right: 10px !important;
+  top: 16px !important;
+  bottom: 16px !important;
+  width: 5px !important;
+  height: auto !important;
+  border-radius: 999px !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-deck .bus-flow-seat.status-booked {
+  border-color: #d1d5db !important;
+  background: #e5e7eb !important;
+  color: #8b95a1 !important;
+  box-shadow: inset 0 -3px 0 rgba(17, 24, 39, 0.08) !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-deck .bus-flow-seat.status-selected {
+  border-color: #f04423 !important;
+  background: #fff2ec !important;
+  color: #c2391e !important;
+  box-shadow: inset 0 0 0 3px rgba(240, 68, 35, 0.16), 0 10px 18px rgba(240, 68, 35, 0.14) !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-deck .seat-label {
+  font-size: 0.9rem !important;
+  line-height: 1 !important;
+}
+
+.bus-flow-page .bus-flow-horizontal-deck .seat-fare {
+  margin-top: 4px !important;
+  color: currentColor !important;
+  font-size: 0.7rem !important;
+  line-height: 1 !important;
+}
+
+@media (max-width: 760px) {
+  .bus-flow-page .bus-flow-horizontal-deck {
+    padding: 22px 18px 20px 106px !important;
+    border-radius: 20px !important;
+  }
+
+  .bus-flow-horizontal-rail {
+    left: 18px;
+    width: 64px;
+  }
+
+  .bus-flow-page .bus-flow-horizontal-deck .bus-flow-seat--sleeper {
+    width: 104px !important;
+  }
+}
+
+/* Backend section layout: vertical top-view coach, matching hybrid seater/sleeper maps. */
+.bus-flow-page .bus-flow-vertical-layout {
+  width: max-content;
+  max-width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 2px 4px 10px;
+}
+
+.bus-flow-page .bus-flow-vertical-deck {
+  width: max-content;
+  min-width: 0;
+  border: 1px solid #e3e8ef;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 14px 28px rgba(17, 24, 39, 0.08);
+  overflow: hidden;
+}
+
+.bus-flow-page .bus-flow-vertical-deck-header {
+  min-height: 34px;
+  padding: 8px 10px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #111827;
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.bus-flow-page .bus-flow-vertical-deck-header small {
+  min-height: 22px;
+  border: 1px solid #d9e0ea;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #f7f8fa;
+  color: #6b7280;
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.bus-flow-page .bus-flow-vertical-deck-body {
+  padding: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #fbfcfd;
+}
+
+.bus-flow-page .bus-flow-vertical-deck--upper .bus-flow-vertical-deck-body {
+  gap: 8px;
+}
+
+.bus-flow-page .bus-flow-vertical-section {
+  --seat-col: 44px;
+  --aisle-col: 14px;
+  flex: 0 0 auto;
+}
+
+.bus-flow-page .bus-flow-vertical-section--sleeper {
+  --seat-col: 58px;
+}
+
+.bus-flow-page .bus-flow-vertical-section-grid {
+  display: grid;
+  gap: 7px;
+}
+
+.bus-flow-page .bus-flow-vertical-row {
+  display: grid;
+  align-items: center;
+  gap: 5px;
+}
+
+.bus-flow-page .bus-flow-vertical-aisle {
+  width: var(--aisle-col);
+  min-height: 100%;
+}
+
+.bus-flow-page .bus-flow-vertical-layout .bus-flow-seat {
+  flex: none;
+  border: 2px solid #dfe5ee;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1f2937;
+  box-shadow: inset 0 -4px 0 rgba(148, 163, 184, 0.22);
+  font-weight: 900;
+}
+
+.bus-flow-page .bus-flow-vertical-layout .bus-flow-seat--seater {
+  width: 44px;
+  min-height: 46px;
+  aspect-ratio: auto;
+}
+
+.bus-flow-page .bus-flow-vertical-layout .bus-flow-seat--sleeper {
+  width: 58px;
+  min-height: 88px;
+  border-radius: 12px;
+}
+
+.bus-flow-page .bus-flow-vertical-layout .bus-flow-seat--sleeper::after {
+  left: 9px;
+  right: 9px;
+  bottom: 8px;
+  height: 8px;
+}
+
+.bus-flow-page .bus-flow-vertical-layout .seat-label {
+  font-size: 0.68rem;
+}
+
+.bus-flow-page .bus-flow-vertical-layout .seat-fare {
+  margin-top: 3px;
+  font-size: 0.54rem;
+}
+
+.bus-flow-page .bus-flow-vertical-layout .bus-flow-seat.status-available {
+  border-color: #dfe5ee;
+  background: #ffffff;
+  color: #1f2937;
+}
+
+.bus-flow-page .bus-flow-vertical-layout .bus-flow-seat.status-booked {
+  border-color: #cfd7e3;
+  background: #e7ebf0;
+  color: #7a8491;
+}
+
+.bus-flow-page .bus-flow-vertical-layout .bus-flow-seat.status-booked-female {
+  border-color: #d26a93;
+  background: #ffeaf3;
+  color: #8d2858;
+}
+
+.bus-flow-page .bus-flow-vertical-layout .bus-flow-seat.status-selected {
+  border-color: #f04423;
+  background: #fff2ec;
+  color: #c2391e;
+  box-shadow: inset 0 0 0 3px rgba(240, 68, 35, 0.14);
+}
+
+@media (max-width: 760px) {
+  .bus-flow-page .bus-flow-vertical-layout {
+    max-width: calc(100vw - 54px);
+    gap: 10px;
+  }
+
+  .bus-flow-page .bus-flow-vertical-deck-body {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .bus-flow-page .bus-flow-vertical-section {
+    --seat-col: 40px;
+    --aisle-col: 10px;
+  }
+
+  .bus-flow-page .bus-flow-vertical-section--sleeper {
+    --seat-col: 52px;
+  }
+
+  .bus-flow-page .bus-flow-vertical-layout .bus-flow-seat--seater {
+    width: 40px;
+    min-height: 43px;
+  }
+
+  .bus-flow-page .bus-flow-vertical-layout .bus-flow-seat--sleeper {
+    width: 52px;
+    min-height: 82px;
+  }
+}

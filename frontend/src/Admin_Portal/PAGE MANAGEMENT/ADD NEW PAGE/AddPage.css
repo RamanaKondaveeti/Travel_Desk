@@ -1,0 +1,81 @@
+.add-container {
+  padding: 20px;
+  background: #f4f6f9;
+  min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-btn {
+  background: #1976d2;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.section {
+  background: white;
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.section h3 {
+  background: linear-gradient(to right, #00897b, #26a69a);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+input,
+select,
+textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+
+textarea {
+  height: 70px;
+}
+
+.editor {
+  height: 150px;
+}
+
+.submit-area {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.submit-btn {
+  background: #ff7a00;
+  color: white;
+  border: 2px solid #ff7a00;
+  padding: 8px 25px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background: white;
+  color: #ff7a00;
+}

@@ -1,0 +1,1648 @@
+import React, { useEffect, useMemo, useState } from "react";
+import { BusFront, Clock3, Info } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import "../../STYLES/HolographicBus.css";
+import apsrtcBg from "../../assets/images/apsrtc-bg.svg";
+import apsrtcLogo from "../../assets/images/apsrtc-logo.svg";
+import gsrtcBg from "../../assets/images/gsrtc-bg.svg";
+import gsrtcLogo from "../../assets/images/gsrtc-logo.svg";
+import keralaRtcBg from "../../assets/images/kerala-rtc-bg.svg";
+import keralaRtcLogo from "../../assets/images/kerala-rtc-logo.svg";
+import ksrtcBg from "../../assets/images/ksrtc-bg.svg";
+import ksrtcLogo from "../../assets/images/ksrtc-logo.svg";
+import privatePrimeLogo from "../../assets/images/private-prime-logo.svg";
+import privateRoyalLogo from "../../assets/images/private-royal-logo.svg";
+import privateSkylineLogo from "../../assets/images/private-skyline-logo.svg";
+import rtcBusLogo from "../../assets/images/rtc-bus-logo.svg";
+import tgsrtcBg from "../../assets/images/tgsrtc-bg.svg";
+import tgsrtcLogo from "../../assets/images/tgsrtc-logo.svg";
+import {
+  readBusBookingFlowState,
+  writeBusBookingFlowState,
+} from "./busBookingFlowStore";
+import { getBusPricingPreview, getBusSeatMap } from "../../services/busBookingService";
+
+const BOARDING_LABELS = [
+  "Main Circle",
+  "Metro Station",
+  "Cross Roads",
+  "Market Junction",
+  "Bypass",
+  "Service Road",
+];
+
+function formatCurrency(amount) {
+  const value = Number(amount) || 0;
+  return `\u20b9 ${new Intl.NumberFormat("en-IN", {
+    maximumFractionDigits: Number.isInteger(value) ? 0 : 2,
+    minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+  }).format(value)}`;
+}
+
+function parseClockToMinutes(clockText) {
+  const [hoursRaw, minutesRaw] = String(clockText || "")
+    .split(":")
+    .map((part) => Number(part));
+
+  if (!Number.isFinite(hoursRaw) || !Number.isFinite(minutesRaw)) {
+    return 0;
+  }
+
+  return hoursRaw * 60 + minutesRaw;
+}
+
+function formatMinutesToClock(totalMinutes) {
+  const minutesInDay = 24 * 60;
+  const normalized = ((totalMinutes % minutesInDay) + minutesInDay) % minutesInDay;
+  const hours = Math.floor(normalized / 60);
+  const minutes = normalized % 60;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+function createPointOptions(baseName, city, baseTime, idPrefix, offsets) {
+  return BOARDING_LABELS.map((label, index) => {
+    const isFirst = index === 0;
+    const pointName = isFirst ? baseName : `${city} ${label}`;
+    const minutes = parseClockToMinutes(baseTime) + offsets[index % offsets.length];
+
+    return {
+      id: `${idPrefix}-${index + 1}`,
+      name: pointName,
+      address: isFirst
+        ? `Near ${pointName}`
+        : `${label}, ${city}`,
+      time: formatMinutesToClock(minutes),
+    };
+  });
+}
+
+function hashFromText(text) {
+  let hash = 0;
+  const value = String(text || "");
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 31 + value.charCodeAt(index)) >>> 0;
+  }
+  return hash || 1;
+}
+
+function createRandom(seedStart) {
+  let seed = seedStart >>> 0;
+  return () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+}
+
+function getBusLayoutKind(busType) {
+  const normalizedType = String(busType || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+  const hasSeater = /\bseat(er|ing)?\b/.test(normalizedType);
+  const hasSleeper = /\bsleeper\b|\bsleeping\b/.test(normalizedType);
+
+  if (hasSeater && hasSleeper) {
+    return "hybrid";
+  }
+
+  if (hasSleeper) {
+    return "sleeper";
+  }
+
+  return "seater";
+}
+
+function getSeatMapLayoutKind(busType, seatMap) {
+  const layoutType = String(seatMap?.layoutType || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+  if (
+    layoutType.includes("seater sleeper") ||
+    layoutType.includes("sleeper seater") ||
+    layoutType.includes("hybrid")
+  ) {
+    return "hybrid";
+  }
+
+  if (layoutType.includes("sleeper")) {
+    return "sleeper";
+  }
+
+  if (layoutType.includes("seater")) {
+    return "seater";
+  }
+
+  return getBusLayoutKind(busType);
+}
+
+function normalizeSeatCode(value) {
+  return String(value || "").trim().toUpperCase();
+}
+
+function getDeckName(value, fallback = "Main Deck") {
+  const normalized = String(value || "").trim().toUpperCase();
+
+  if (normalized === "LOWER") {
+    return "Lower Deck";
+  }
+
+  if (normalized === "UPPER") {
+    return "Upper Deck";
+  }
+
+  return value ? String(value).trim() : fallback;
+}
+
+function getDeckGroupName(definition, section, fallback = "Deck") {
+  const deckName = getDeckName(definition?.deck || section?.deck || "", "");
+
+  if (deckName) {
+    return deckName.replace(/\s+Deck$/i, "");
+  }
+
+  const sectionLabel = String(section?.label || definition?.sectionLabel || "").trim();
+
+  if (/upper/i.test(sectionLabel)) {
+    return "Upper";
+  }
+
+  if (/lower/i.test(sectionLabel)) {
+    return "Lower";
+  }
+
+  return fallback;
+}
+
+function getDeckGroupSortValue(groupName) {
+  const normalized = String(groupName || "").trim().toLowerCase();
+
+  if (normalized === "lower") {
+    return 1;
+  }
+
+  if (normalized === "upper") {
+    return 2;
+  }
+
+  if (normalized === "main") {
+    return 0;
+  }
+
+  return 10;
+}
+
+function getSeatKindFromData(definition, backendSeat) {
+  const seatType = String(definition?.seatType || backendSeat?.seatType || "")
+    .trim()
+    .toLowerCase();
+
+  if (definition?.isSleeper === true || seatType.includes("sleeper")) {
+    return "sleeper";
+  }
+
+  return "seater";
+}
+
+function createSequentialSeats({ count, prefix, deck, kind }) {
+  return Array.from({ length: Math.max(0, count) }, (_, index) => ({
+    label: `${prefix}${index + 1}`,
+    deck,
+    kind,
+  }));
+}
+
+function createSeaterDisplayLabel(index, seatsPerRow = 3) {
+  const letters = ["A", "B", "C", "D"];
+  const row = Math.floor(index / seatsPerRow) + 1;
+  const letter = letters[index % seatsPerRow] || String(index + 1);
+  return `${row}${letter}`;
+}
+
+function getBackendSeatCodes(backendSeats) {
+  if (!Array.isArray(backendSeats)) {
+    return [];
+  }
+
+  return backendSeats
+    .map((seat) => normalizeSeatCode(seat?.seatCode || seat?.SeatCode))
+    .filter(Boolean)
+    .sort((first, second) => {
+      const firstSeater = first.match(/^(\d+)([A-Z])$/);
+      const secondSeater = second.match(/^(\d+)([A-Z])$/);
+
+      if (firstSeater && secondSeater) {
+        const rowDiff = Number(firstSeater[1]) - Number(secondSeater[1]);
+        return rowDiff || firstSeater[2].localeCompare(secondSeater[2]);
+      }
+
+      const firstDeck = first.match(/^([LU])(\d+)$/);
+      const secondDeck = second.match(/^([LU])(\d+)$/);
+
+      if (firstDeck && secondDeck) {
+        if (firstDeck[1] !== secondDeck[1]) {
+          return firstDeck[1] === "L" ? -1 : 1;
+        }
+
+        return Number(firstDeck[2]) - Number(secondDeck[2]);
+      }
+
+      if (firstSeater && secondDeck) {
+        return -1;
+      }
+
+      if (firstDeck && secondSeater) {
+        return 1;
+      }
+
+      return first.localeCompare(second, undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
+    });
+}
+
+function createDefinitionsFromBackendSeatMap(backendSeatMap, backendSeats = []) {
+  const seatDefinitions = Array.isArray(backendSeatMap?.seatDefinitions)
+    ? backendSeatMap.seatDefinitions
+    : [];
+  const sections = Array.isArray(backendSeatMap?.sections)
+    ? backendSeatMap.sections
+    : [];
+
+  if (seatDefinitions.length === 0 && sections.length === 0) {
+    return [];
+  }
+
+  const backendSeatsByCode = new Map();
+  backendSeats.forEach((seat) => {
+    const code = normalizeSeatCode(seat?.seatCode || seat?.SeatCode);
+    if (code) {
+      backendSeatsByCode.set(code, seat);
+    }
+  });
+
+  const definitionsByCode = new Map();
+  seatDefinitions.forEach((definition) => {
+    const code = normalizeSeatCode(definition?.seatCode);
+    if (code) {
+      definitionsByCode.set(code, definition);
+    }
+  });
+
+  const usedCodes = new Set();
+  const sectionDefinitions = sections.flatMap((section, sectionIndex) => {
+    const sectionSeatCodes = Array.isArray(section?.seatCodes)
+      ? section.seatCodes.map(normalizeSeatCode).filter(Boolean)
+      : [];
+    const columnsPerRow = Math.max(1, Number(section?.columnsPerRow) || 1);
+    const sectionLabel =
+      String(section?.label || "").trim() ||
+      getDeckName(section?.deck, `Section ${sectionIndex + 1}`);
+
+    return sectionSeatCodes.map((seatCode, index) => {
+      usedCodes.add(seatCode);
+      const definition = definitionsByCode.get(seatCode) || {};
+      const backendSeat = backendSeatsByCode.get(seatCode) || {};
+      const aisleAfterColumn = Number(section?.aisleAfterColumn);
+      const deckGroup = getDeckGroupName(
+        definition,
+        section,
+        `Deck ${sectionIndex + 1}`
+      );
+
+      return {
+        label: seatCode,
+        deck: sectionLabel,
+        deckGroup,
+        sectionLabel,
+        kind: getSeatKindFromData(definition, backendSeat),
+        row: Number(definition.row) || Math.floor(index / columnsPerRow) + 1,
+        column: Number(definition.column) || (index % columnsPerRow) + 1,
+        columnsPerRow,
+        aisleAfterColumn: Number.isFinite(aisleAfterColumn)
+          ? aisleAfterColumn
+          : -1,
+        isUpper:
+          deckGroup.toLowerCase() === "upper" ||
+          definition?.isUpper === true ||
+          String(definition?.deck || section?.deck || "").toUpperCase() === "UPPER",
+      };
+    });
+  });
+
+  const looseDefinitions = seatDefinitions
+    .map((definition) => {
+      const seatCode = normalizeSeatCode(definition?.seatCode);
+
+      if (!seatCode || usedCodes.has(seatCode)) {
+        return null;
+      }
+
+      const backendSeat = backendSeatsByCode.get(seatCode) || {};
+      const deckGroup = getDeckGroupName(definition, null, getDeckName(definition.deck));
+
+      return {
+        label: seatCode,
+        deck: getDeckName(definition.deck),
+        deckGroup,
+        sectionLabel: getDeckName(definition.deck),
+        kind: getSeatKindFromData(definition, backendSeat),
+        row: Number(definition.row) || 0,
+        column: Number(definition.column) || 0,
+        columnsPerRow: 0,
+        aisleAfterColumn: definition.isSleeper ? -1 : 0,
+        isUpper:
+          deckGroup.toLowerCase() === "upper" ||
+          definition?.isUpper === true ||
+          String(definition?.deck || "").toUpperCase() === "UPPER",
+      };
+    })
+    .filter(Boolean)
+    .sort(
+      (first, second) =>
+        first.deck.localeCompare(second.deck) ||
+        first.row - second.row ||
+        first.column - second.column ||
+        first.label.localeCompare(second.label, undefined, {
+          numeric: true,
+          sensitivity: "base",
+        })
+    );
+
+  return [...sectionDefinitions, ...looseDefinitions];
+}
+
+function seatDefinitionsForBus(busType, totalSeats, backendSeats = [], backendSeatMap = null) {
+  const backendDefinitions = createDefinitionsFromBackendSeatMap(
+    backendSeatMap,
+    backendSeats
+  );
+
+  if (backendDefinitions.length > 0) {
+    return backendDefinitions;
+  }
+
+  const layoutKind = getSeatMapLayoutKind(busType, backendSeatMap);
+  const backendSeatCodes = getBackendSeatCodes(backendSeats);
+  const normalizedTotalSeats = Math.max(
+    1,
+    backendSeatCodes.length ||
+      Number(totalSeats) ||
+      (layoutKind === "hybrid" ? 36 : layoutKind === "sleeper" ? 30 : 44)
+  );
+
+  if (backendSeatCodes.length > 0 && layoutKind === "seater") {
+    return backendSeatCodes.map((label) => ({
+      label,
+      deck: "Main Deck",
+      kind: "seater",
+    }));
+  }
+
+  if (layoutKind === "sleeper") {
+    const lowerCodes = backendSeatCodes.filter((code) => code.startsWith("L"));
+    const upperCodes = backendSeatCodes.filter((code) => code.startsWith("U"));
+
+    if (lowerCodes.length > 0 || upperCodes.length > 0) {
+      return [
+        ...lowerCodes.map((label) => ({ label, deck: "Lower Deck", kind: "sleeper" })),
+        ...upperCodes.map((label) => ({ label, deck: "Upper Deck", kind: "sleeper" })),
+      ];
+    }
+
+    const lowerCount = Math.ceil(normalizedTotalSeats / 2);
+    const upperCount = normalizedTotalSeats - lowerCount;
+
+    return [
+      ...createSequentialSeats({
+        count: lowerCount,
+        prefix: "L",
+        deck: "Lower Deck",
+        kind: "sleeper",
+      }),
+      ...createSequentialSeats({
+        count: upperCount,
+        prefix: "U",
+        deck: "Upper Deck",
+        kind: "sleeper",
+      }),
+    ];
+  }
+
+  if (layoutKind === "hybrid") {
+    const lowerCodes = backendSeatCodes.filter((code) => code.startsWith("L"));
+    const upperCodes = backendSeatCodes.filter((code) => code.startsWith("U"));
+
+    if (lowerCodes.length > 0 || upperCodes.length > 0) {
+      return [
+        ...lowerCodes.map((label, index) => ({
+          label,
+          displayLabel: createSeaterDisplayLabel(index, 3),
+          deck: "Lower Deck",
+          kind: "seater",
+        })),
+        ...upperCodes.map((label) => ({ label, deck: "Upper Deck", kind: "sleeper" })),
+      ];
+    }
+
+    const lowerCount = Math.ceil(normalizedTotalSeats * 0.67);
+    const upperCount = normalizedTotalSeats - lowerCount;
+
+    return [
+      ...createSequentialSeats({
+        count: lowerCount,
+        prefix: "L",
+        deck: "Lower Deck",
+        kind: "seater",
+      }).map((seat, index) => ({
+        ...seat,
+        displayLabel: createSeaterDisplayLabel(index, 3),
+      })),
+      ...createSequentialSeats({
+        count: upperCount,
+        prefix: "U",
+        deck: "Upper Deck",
+        kind: "sleeper",
+      }),
+    ];
+  }
+
+  return createSequentialSeats({
+    count: normalizedTotalSeats,
+    prefix: "L",
+    deck: "Main Deck",
+    kind: "seater",
+  });
+}
+
+function createFareBands(baseFare) {
+  return [Math.max(0, Number(baseFare) || 0)];
+}
+
+function normalizeGender(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (normalized === "female") return "Female";
+  if (normalized === "male") return "Male";
+  return "";
+}
+
+function createSeatCatalog(bus) {
+  const seatDefs = seatDefinitionsForBus(bus.busType, bus.totalSeats);
+  const fareBands = createFareBands(bus.fare);
+  const availableSeatCount = Math.max(1, Number(bus.availableSeats) || 1);
+  const bookedSeatCount = Math.max(0, seatDefs.length - availableSeatCount);
+  const random = createRandom(hashFromText(`${bus.id}-${bus.busNumber}-${bus.fare}`));
+
+  const allIndexes = seatDefs.map((_, index) => index);
+  const bookedIndexes = new Set();
+
+  while (bookedIndexes.size < Math.min(bookedSeatCount, seatDefs.length - 1)) {
+    const picked = allIndexes[Math.floor(random() * allIndexes.length)];
+    bookedIndexes.add(picked);
+  }
+
+  const seats = seatDefs.map((definition, index) => {
+    let status = "available";
+
+    if (bookedIndexes.has(index)) {
+      status = "booked";
+    }
+
+    return {
+      id: `seat-${definition.label}`,
+      label: definition.label,
+      displayLabel: definition.displayLabel,
+      deck: definition.deck,
+      deckGroup: definition.deckGroup || definition.deck,
+      kind: definition.kind,
+      status,
+      bookedGender: "",
+      fare: fareBands[index % fareBands.length],
+    };
+  });
+
+  return { seats, fareBands };
+}
+
+function seatRowsForDeck(seats, deckName) {
+  const deckSeats = seats.filter((seat) => seat.deck === deckName);
+  const firstSeat = deckSeats[0];
+
+  if (
+    deckSeats.some(
+      (seat) => Number(seat?.row) > 0 && Number(seat?.column) > 0
+    )
+  ) {
+    const rowsByNumber = new Map();
+    const maxColumn =
+      Math.max(
+        Number(firstSeat?.columnsPerRow) || 0,
+        ...deckSeats.map((seat) => Number(seat?.column) || 0)
+      ) || 1;
+
+    deckSeats.forEach((seat) => {
+      const rowNumber = Number(seat?.row) || 1;
+      const columnNumber = Number(seat?.column) || 1;
+
+      if (!rowsByNumber.has(rowNumber)) {
+        rowsByNumber.set(rowNumber, Array.from({ length: maxColumn }, () => null));
+      }
+
+      rowsByNumber.get(rowNumber)[columnNumber - 1] = seat;
+    });
+
+    return [...rowsByNumber.entries()]
+      .sort(([firstRow], [secondRow]) => firstRow - secondRow)
+      .map(([, row]) => row);
+  }
+
+  const seatsPerRow = firstSeat?.kind === "sleeper" || deckName !== "Main Deck" ? 3 : 4;
+
+  const rows = [];
+  for (let index = 0; index < deckSeats.length; index += seatsPerRow) {
+    const row = deckSeats.slice(index, index + seatsPerRow);
+    while (row.length < seatsPerRow) {
+      row.push(null);
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+
+function getAdjacentSeatLabelsFromRows(seatLabel, rows) {
+  const normalizedSeatLabel = String(seatLabel || "").trim();
+  if (!normalizedSeatLabel) {
+    return [];
+  }
+
+  for (const row of rows) {
+    const seatIndex = row.findIndex((seat) => seat?.label === normalizedSeatLabel);
+    if (seatIndex === -1) {
+      continue;
+    }
+
+    const rowAnchorSeat = row.find(Boolean);
+    const configuredAisleAfterColumn = Number(rowAnchorSeat?.aisleAfterColumn);
+    const aisleAfterIndex = Number.isFinite(configuredAisleAfterColumn)
+      ? configuredAisleAfterColumn
+      : row.length === 4
+        ? 1
+        : 0;
+
+    return [seatIndex - 1, seatIndex + 1]
+      .filter((adjacentIndex) => {
+        if (adjacentIndex < 0 || adjacentIndex >= row.length || !row[adjacentIndex]) {
+          return false;
+        }
+
+        return aisleAfterIndex < 0 || Math.min(seatIndex, adjacentIndex) !== aisleAfterIndex;
+      })
+      .map((adjacentIndex) => row[adjacentIndex].label);
+  }
+
+  return [];
+}
+
+function getAdjacentBookedGenders(seat, allSeatRows, seatsByLabel) {
+  const adjacentLabels = getAdjacentSeatLabelsFromRows(seat.label, allSeatRows);
+  return adjacentLabels
+    .map((label) => seatsByLabel.get(label))
+    .filter((adjacentSeat) => adjacentSeat?.status === "booked" && adjacentSeat?.bookedGender)
+    .map((adjacentSeat) => adjacentSeat.bookedGender);
+}
+
+function resolveBusOverviewVisual(bus) {
+  if (!bus) {
+    return { background: "", logo: rtcBusLogo, brand: "Bus", operatorName: "", routeText: "", summaryText: "" };
+  }
+
+  const operator = String(bus.operatorName || "").toLowerCase();
+  const routeText = `${bus.fromCity || ""} → ${bus.toCity || ""}`;
+  const summaryText = `${bus.busType || ""} · ${bus.duration || ""}`;
+
+  const overviewMap = {
+    apsrtc: { background: apsrtcBg, logo: apsrtcLogo, brand: "APSRTC" },
+    gsrtc: { background: gsrtcBg, logo: gsrtcLogo, brand: "GSRTC" },
+    ksrtc: { background: ksrtcBg, logo: ksrtcLogo, brand: "KSRTC" },
+    tgsrtc: { background: tgsrtcBg, logo: tgsrtcLogo, brand: "TGSRTC" },
+    tsrtc: { background: tgsrtcBg, logo: tgsrtcLogo, brand: "TSRTC" },
+    kerala: { background: keralaRtcBg, logo: keralaRtcLogo, brand: "Kerala RTC" },
+  };
+
+  for (const [key, value] of Object.entries(overviewMap)) {
+    if (operator.includes(key)) {
+      return { ...value, operatorName: bus.operatorName, routeText, summaryText };
+    }
+  }
+
+  const privateLogos = [privatePrimeLogo, privateRoyalLogo, privateSkylineLogo];
+  const logoIndex = Math.abs(hashFromText(bus.operatorName || "")) % privateLogos.length;
+
+  return {
+    background: "",
+    logo: privateLogos[logoIndex],
+    brand: bus.operatorName || "Private",
+    operatorName: bus.operatorName,
+    routeText,
+    summaryText,
+  };
+}
+
+function SeaterSVG() {
+  return (
+    <svg
+      className="seat-svg seat-svg--seater"
+      viewBox="0 0 48 48"
+      aria-hidden="true"
+      focusable="false"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect className="seat-shadow" x="8" y="10" width="32" height="32" rx="9" />
+      <rect className="seat-frame" x="8" y="7" width="32" height="32" rx="9" />
+      <path className="seat-back" d="M14 14a6 6 0 0 1 6-6h8a6 6 0 0 1 6 6v7H14v-7Z" />
+      <rect className="seat-cushion" x="14" y="20" width="20" height="13" rx="5" />
+      <path className="seat-arm" d="M9 21h6v11H9zM33 21h6v11h-6z" />
+    </svg>
+  );
+}
+
+function SleeperSVG() {
+  return (
+    <svg
+      className="seat-svg seat-svg--sleeper"
+      viewBox="0 0 48 88"
+      aria-hidden="true"
+      focusable="false"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect className="seat-shadow" x="7" y="9" width="34" height="73" rx="10" />
+      <rect className="seat-frame" x="7" y="6" width="34" height="73" rx="10" />
+      <rect className="sleeper-pillow" x="13" y="13" width="22" height="15" rx="5" />
+      <rect className="seat-cushion" x="13" y="33" width="22" height="37" rx="6" />
+      <path className="sleeper-rail" d="M18 77h12" />
+    </svg>
+  );
+}
+
+export default function BusSeatSelectionPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const flowState = readBusBookingFlowState();
+  const stateData = location.state || flowState || {};
+  
+  const bus = stateData.bus;
+  const searchContext = stateData.searchContext;
+  
+  const [selectedSeatLabels, setSelectedSeatLabels] = useState(stateData.selectedSeatLabels || []);
+  const [selectedSeatPassengers, setSelectedSeatPassengers] = useState(stateData.selectedSeatPassengers || {});
+  const [selectedBoardingId, setSelectedBoardingId] = useState(stateData.selectedBoardingId || "");
+  const [selectedDroppingId, setSelectedDroppingId] = useState(stateData.selectedDroppingId || "");
+  const [activePointTab, setActivePointTab] = useState("boarding");
+  const [activeFareFilter, setActiveFareFilter] = useState("all");
+  const [hoveredSeat, setHoveredSeat] = useState(null);
+  const [isSeatLayoutLoading, setIsSeatLayoutLoading] = useState(true);
+  const [isFetchingSeats, setIsFetchingSeats] = useState(false);
+  const [seatFetchError, setSeatFetchError] = useState("");
+  const [backendSeatMap, setBackendSeatMap] = useState(null);
+  const [selectionError, setSelectionError] = useState("");
+  const [activeCardPanel, setActiveCardPanel] = useState(null);
+
+
+  useEffect(() => {
+    // Clear any previous coupon state when seat selection is loaded/reset
+    writeBusBookingFlowState({
+      couponCode: null,
+      couponDiscount: 0,
+      appliedCoupon: null,
+      pricingPreview: null,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!bus) return;
+    writeBusBookingFlowState({
+      bus,
+      searchContext,
+      selectedSeatLabels,
+      selectedSeatPassengers,
+      selectedBoardingId,
+      selectedDroppingId,
+    });
+  }, [bus, searchContext, selectedSeatLabels, selectedSeatPassengers, selectedBoardingId, selectedDroppingId]);
+
+  useEffect(() => {
+    if (!bus) {
+      return undefined;
+    }
+
+    setIsSeatLayoutLoading(true);
+    setIsFetchingSeats(true);
+    setSeatFetchError("");
+    
+    const fetchSeatMap = async () => {
+      try {
+        const seatMap = await getBusSeatMap(bus.id);
+        setBackendSeatMap(seatMap);
+      } catch (error) {
+        console.error("Failed to fetch seat map:", error);
+        setSeatFetchError("Unable to load seat map. Please try again.");
+      } finally {
+        setIsFetchingSeats(false);
+        window.setTimeout(() => {
+          setIsSeatLayoutLoading(false);
+        }, 500);
+      }
+    };
+
+    fetchSeatMap();
+
+    return () => {
+      // Cleanup if needed
+    };
+  }, [bus]);
+
+  const seatData = useMemo(() => {
+    if (!bus) {
+      return { seats: [], fareBands: [] };
+    }
+
+    const backendSeats = Array.isArray(backendSeatMap?.seats)
+      ? backendSeatMap.seats
+      : [];
+
+    // If we have backend seat map, use it
+    if (backendSeats.length > 0) {
+      // Merge backend seat data with our seat definitions
+      const backendSeatsByCode = new Map();
+      backendSeats.forEach((seat) => {
+        backendSeatsByCode.set(
+          String(seat?.seatCode || "").trim().toUpperCase(),
+          seat
+        );
+      });
+
+      const fareBands = [
+        ...new Set(
+          backendSeats
+            .map((seat) => Number(seat?.fareBeforeTax) || 0)
+            .map((fare, index) => fare || Number(backendSeats[index]?.priceInr) || 0)
+            .filter((fare) => fare > 0)
+        ),
+      ].sort((first, second) => first - second);
+
+      const seatDefs = seatDefinitionsForBus(
+        bus.busType,
+        bus.totalSeats,
+        backendSeats,
+        backendSeatMap
+      );
+      const mergedSeats = seatDefs.map((definition, index) => {
+        const backendSeat = backendSeatsByCode.get(definition.label);
+        const isBooked = backendSeat
+          ? backendSeat.isBooked === true
+          : false;
+        const bookedGender = normalizeGender(
+          backendSeat?.gender
+        );
+        const seatFareBeforeTax =
+          Number(backendSeat?.fareBeforeTax) ||
+          Number(backendSeat?.priceInr) ||
+          (Number(backendSeat?.baseFare) || 0) + (Number(backendSeat?.markupAmount) || 0) ||
+          Number(backendSeatMap?.priceInr) ||
+          Number(bus.fare) ||
+          0;
+        
+        // Determine status based on backend data
+        let status = "available";
+        if (isBooked) {
+          status = "booked";
+        }
+
+        return {
+          id: `seat-${definition.label}`,
+          label: definition.label,
+          displayLabel: definition.displayLabel,
+          deck: definition.deck,
+          deckGroup: definition.deckGroup || definition.deck,
+          kind: definition.kind,
+          position: definition.position,
+          row: definition.row,
+          column: definition.column,
+          columnsPerRow: definition.columnsPerRow,
+          aisleAfterColumn: definition.aisleAfterColumn,
+          isUpper: definition.isUpper,
+          status,
+          bookedGender,
+          seatType: backendSeat?.seatType || "",
+          baseFare: Number(backendSeat?.baseFare) || seatFareBeforeTax,
+          markupAmount: Number(backendSeat?.markupAmount) || 0,
+          fareBeforeTax: seatFareBeforeTax,
+          fare: seatFareBeforeTax,
+        };
+      });
+
+      return { seats: mergedSeats, fareBands: fareBands.length > 0 ? fareBands : createFareBands(bus.fare) };
+    }
+
+    // Fallback to generated data if backend data not available
+    return createSeatCatalog(bus);
+  }, [bus, backendSeatMap]);
+
+  const seatsByLabel = useMemo(() => {
+    const map = new Map();
+    seatData.seats.forEach((seat) => {
+      map.set(seat.label, seat);
+    });
+    return map;
+  }, [seatData.seats]);
+
+  const boardingPoints = useMemo(() => {
+    if (!bus) {
+      return [];
+    }
+
+    return createPointOptions(
+      bus.boardingPoint,
+      bus.fromCity,
+      bus.departureTime,
+      "boarding",
+      [-35, -28, -20, -14, -8, -4]
+    );
+  }, [bus]);
+
+  const droppingPoints = useMemo(() => {
+    if (!bus) {
+      return [];
+    }
+
+    return createPointOptions(
+      bus.droppingPoint,
+      bus.toCity,
+      bus.arrivalTime,
+      "dropping",
+      [-6, -2, 4, 10, 16, 22]
+    );
+  }, [bus]);
+
+  const selectedSeats = useMemo(
+    () =>
+      selectedSeatLabels
+        .map((seatLabel) => seatsByLabel.get(seatLabel))
+        .filter(Boolean),
+    [selectedSeatLabels, seatsByLabel]
+  );
+
+  const maxSelectableSeats = Math.min(
+    6,
+    Math.max(1, Number(bus?.availableSeats) || selectedSeats.length || 1)
+  );
+
+  const selectedSeatTotal = selectedSeats.reduce(
+    (accumulator, seat) => accumulator + (Number(seat.fare) || 0),
+    0
+  );
+
+  const selectedBoarding = boardingPoints.find((point) => point.id === selectedBoardingId) || null;
+  const selectedDropping = droppingPoints.find((point) => point.id === selectedDroppingId) || null;
+
+  const mainDeckRows = useMemo(
+    () => seatRowsForDeck(seatData.seats, "Main Deck"),
+    [seatData.seats]
+  );
+  const upperDeckRows = useMemo(
+    () => seatRowsForDeck(seatData.seats, "Upper Deck"),
+    [seatData.seats]
+  );
+  const lowerDeckRows = useMemo(
+    () => seatRowsForDeck(seatData.seats, "Lower Deck"),
+    [seatData.seats]
+  );
+  const seatSections = useMemo(() => {
+    const sectionNames = [];
+
+    seatData.seats.forEach((seat) => {
+      if (seat?.deck && !sectionNames.includes(seat.deck)) {
+        sectionNames.push(seat.deck);
+      }
+    });
+
+    return sectionNames.map((sectionName) => ({
+      name: sectionName,
+      rows: seatRowsForDeck(seatData.seats, sectionName),
+      firstSeat: seatData.seats.find((seat) => seat.deck === sectionName) || null,
+    }));
+  }, [seatData.seats]);
+  const seatDeckGroups = useMemo(() => {
+    const groups = new Map();
+
+    seatSections.forEach((section, sectionIndex) => {
+      const groupName =
+        String(section.firstSeat?.deckGroup || "").trim() ||
+        String(section.firstSeat?.isUpper ? "Upper" : "").trim() ||
+        section.name.replace(/\s+(seater|sleeper)$/i, "").trim() ||
+        section.name;
+
+      if (!groups.has(groupName)) {
+        groups.set(groupName, {
+          name: groupName,
+          order: getDeckGroupSortValue(groupName) * 100 + sectionIndex,
+          sections: [],
+        });
+      }
+
+      groups.get(groupName).sections.push(section);
+    });
+
+    return [...groups.values()].sort(
+      (first, second) =>
+        first.order - second.order ||
+        first.name.localeCompare(second.name, undefined, {
+          numeric: true,
+          sensitivity: "base",
+        })
+    );
+  }, [seatSections]);
+  const allSeatRows = useMemo(
+    () =>
+      seatSections.length > 0
+        ? seatSections.flatMap((section) => section.rows)
+        : [...mainDeckRows, ...lowerDeckRows, ...upperDeckRows],
+    [seatSections, mainDeckRows, lowerDeckRows, upperDeckRows]
+  );
+  const busOverview = useMemo(() => resolveBusOverviewVisual(bus), [bus]);
+
+  if (!bus) {
+    return (
+      <main className="bus-flow-page">
+        <div className="bus-flow-shell">
+          <section className="bus-flow-empty">
+            <h2>Select a bus first</h2>
+            <p>Open bus search results and click View Seats to continue booking.</p>
+            <button type="button" onClick={() => navigate("/search/buses")}>
+              Go to Bus Search
+            </button>
+          </section>
+        </div>
+      </main>
+    );
+  }
+
+  const layoutKind = getSeatMapLayoutKind(bus.busType, backendSeatMap);
+  const hasBackendSections =
+    Array.isArray(backendSeatMap?.sections) && backendSeatMap.sections.length > 0;
+  const hasDeckSections =
+    hasBackendSections || layoutKind === "sleeper" || layoutKind === "hybrid";
+
+  const handleSeatToggle = (seat) => {
+    if (!seat || seat.status === "booked") {
+      return;
+    }
+
+    setSelectionError("");
+    setSelectedSeatLabels((previous) => {
+      if (previous.includes(seat.label)) {
+        setSelectedSeatPassengers((passengers) => {
+          const updated = { ...passengers };
+          delete updated[seat.label];
+          return updated;
+        });
+
+        return previous.filter((label) => label !== seat.label);
+      }
+
+      if (previous.length >= maxSelectableSeats) {
+        setSelectionError(`You can select up to ${maxSelectableSeats} seats in one booking.`);
+        return previous;
+      }
+
+      return [...previous, seat.label];
+    });
+  };
+
+  const handleContinue = async () => {
+    if (selectedSeats.length === 0) {
+      setSelectionError("Select at least one seat.");
+      return;
+    }
+
+    if (!selectedBoarding || !selectedDropping) {
+      setSelectionError("Select both boarding and dropping points.");
+      return;
+    }
+
+    const seatCodes = selectedSeats.map((seat) => seat.label).filter(Boolean);
+    let pricingPreview = null;
+
+    try {
+      pricingPreview = await getBusPricingPreview({
+        busId: bus.id,
+        seatCodes,
+      });
+    } catch (error) {
+      console.error("Error fetching bus pricing preview:", error);
+      setSelectionError(error.message || "Unable to preview pricing. Please try again.");
+      return;
+    }
+
+    const selectedSeatsWithAdjacency = selectedSeats.map((seat) => ({
+      ...seat,
+      adjacentBookedGenders: getAdjacentBookedGenders(seat, allSeatRows, seatsByLabel),
+    }));
+
+    const passengers = selectedSeatsWithAdjacency.map((seat, index) => ({
+      id: `p-${seat.label}-${index + 1}`,
+      seatNumber: seat.label,
+      fullName: "",
+      gender: "",
+    }));
+
+    const flowData = {
+      bus,
+      searchContext,
+      selectedSeatLabels,
+      selectedSeatPassengers,
+      selectedSeats: selectedSeatsWithAdjacency,
+      passengers,
+      selectedBoardingId,
+      selectedDroppingId,
+      boardingPoint: selectedBoarding,
+      droppingPoint: selectedDropping,
+      fareSummary: {
+        baseFare: pricingPreview.subtotalBeforeCoupon,
+        subtotalBeforeCoupon: pricingPreview.subtotalBeforeCoupon,
+        couponAmount: pricingPreview.couponAmount,
+        taxableFare: pricingPreview.taxableFare,
+        gstPercent: pricingPreview.gstPercent,
+        gstAmount: pricingPreview.gstAmount,
+        tax: pricingPreview.gstAmount,
+        convenienceFee: pricingPreview.convenienceFee,
+        grandTotal: pricingPreview.grandTotal,
+        totalFare: pricingPreview.grandTotal,
+      },
+      pricingPreview,
+    };
+
+    writeBusBookingFlowState(flowData);
+    navigate("/bus/passenger-details", { state: flowData });
+  };
+
+  const handleRetryFetchSeats = async () => {
+    if (!bus) return;
+    
+    setIsFetchingSeats(true);
+    setSeatFetchError("");
+    
+    try {
+      const seatMap = await getBusSeatMap(bus.id);
+      setBackendSeatMap(seatMap);
+    } catch (error) {
+      setSeatFetchError("Failed to load seats. Please check your connection and try again.");
+    } finally {
+      setIsFetchingSeats(false);
+    }
+  };
+
+  const renderSeatButton = (seat) => {
+    if (!seat) {
+      return <span className="bus-flow-seat-gap" />;
+    }
+
+    const isSelected = selectedSeatLabels.includes(seat.label);
+    const isDimmed = activeFareFilter !== "all" && Number(activeFareFilter) !== seat.fare;
+    const isBookedFemale = seat.status === "booked" && seat.bookedGender === "Female";
+    const isNextToBookedFemale =
+      seat.status !== "booked" &&
+      (seat.bookedGender === "Female" ||
+        getAdjacentSeatLabelsFromRows(seat.label, allSeatRows).some((adjacentLabel) => {
+          const adjacentSeat = seatsByLabel.get(adjacentLabel);
+          return adjacentSeat?.status === "booked" && adjacentSeat?.bookedGender === "Female";
+        }));
+    const className = [
+      "bus-flow-seat",
+      seat.kind === "sleeper" ? "bus-flow-seat--sleeper" : "bus-flow-seat--seater",
+      `status-${seat.status}`,
+      isBookedFemale ? "status-booked-female" : "",
+      isNextToBookedFemale ? "status-female-adjacent" : "",
+      isSelected ? "status-selected" : "",
+      isDimmed ? "is-dimmed" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    return (
+      <button
+        key={seat.id}
+        type="button"
+        className={`${className} ${seat.kind === "sleeper" ? "is-sleeper" : "is-seater"}`}
+        onClick={() => handleSeatToggle(seat)}
+        onMouseEnter={(event) =>
+          setHoveredSeat({
+            label: seat.label,
+            displayLabel: seat.displayLabel,
+            fare: seat.fare,
+            status: seat.status,
+            bookedGender: seat.bookedGender,
+            isNextToBookedFemale,
+            x: event.clientX,
+            y: event.clientY,
+          })
+        }
+        onMouseMove={(event) =>
+          setHoveredSeat((previous) =>
+            previous && previous.label === seat.label
+              ? { ...previous, x: event.clientX, y: event.clientY }
+              : previous
+          )
+        }
+        onMouseLeave={() => setHoveredSeat(null)}
+        disabled={seat.status === "booked"}
+        title={`Seat No: ${seat.displayLabel || seat.label} | Fare: ${formatCurrency(
+          seat.fare
+        )}`}
+      >
+        {seat.kind === "sleeper" ? <SleeperSVG /> : <SeaterSVG />}
+        
+        <div className="seat-details">
+          {seat.status === "booked" && isBookedFemale ? (
+            <span>F</span>
+          ) : seat.status === "booked" ? (
+            <span>X</span>
+          ) : (
+            <span>{seat.displayLabel || seat.label}</span>
+          )}
+        </div>
+      </button>
+    );
+  };
+
+  const renderHorizontalDeck = (deckName, rows, deckClassName, emptyMessage) => {
+    const laneCount = Math.max(...rows.map((row) => row.length), 0);
+    const lanes = Array.from({ length: laneCount }, (_, laneIndex) =>
+      rows.map((row) => row[laneIndex] || null)
+    ).reverse();
+    const firstSeat = rows.flat().find(Boolean);
+    const configuredAisleAfterColumn = Number(firstSeat?.aisleAfterColumn);
+    const aisleBeforeLane = Number.isFinite(configuredAisleAfterColumn)
+      ? configuredAisleAfterColumn + 1
+      : 1;
+
+    // In a reversed list of length L, if the aisle was before original index K,
+    // it will now be before reversed index (L - K).
+    const reversedAisleIndex = laneCount > 0 && aisleBeforeLane > 0
+      ? laneCount - aisleBeforeLane
+      : -1;
+
+    return (
+      <section
+        key={deckName}
+        className={`bus-flow-vertical-deck ${deckClassName}`}
+      >
+        <header className="bus-flow-vertical-deck-header">
+          <span>{deckName.replace(" Deck", "")}</span>
+        </header>
+        <div className="bus-flow-vertical-deck-body">
+          {lanes.length > 0 ? (
+            lanes.map((lane, laneIndex) => (
+              <React.Fragment key={`${deckName}-lane-${laneIndex}`}>
+                {reversedAisleIndex > 0 && laneIndex === reversedAisleIndex && (
+                  <div className="bus-flow-vertical-aisle" />
+                )}
+                <div className="bus-flow-vertical-row bus-flow-lane-row">
+                  {lane.map((seat, seatIndex) => (
+                    <React.Fragment key={`${deckName}-${laneIndex}-${seatIndex}`}>
+                      {seat ? renderSeatButton(seat) : <span className="bus-flow-seat-gap" />}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </React.Fragment>
+            ))
+          ) : (
+            <div className="bus-flow-empty-deck">{emptyMessage}</div>
+          )}
+        </div>
+      </section>
+    );
+  };
+
+  const renderVerticalSection = (section) => {
+    const firstSeat = section.rows.flat().find(Boolean);
+    const configuredAisleAfterColumn = Number(firstSeat?.aisleAfterColumn);
+    const aisleAfterColumn = Number.isFinite(configuredAisleAfterColumn)
+      ? configuredAisleAfterColumn
+      : -1;
+
+    return (
+      <div
+        key={section.name}
+        className={`bus-flow-vertical-section bus-flow-vertical-section--${
+          firstSeat?.kind || "seater"
+        }`}
+      >
+        <div className="bus-flow-vertical-section-grid">
+          {section.rows.map((row, rowIndex) => (
+            <div
+              className="bus-flow-vertical-row"
+              key={`${section.name}-row-${rowIndex}`}
+            >
+              {row.slice().reverse().map((seat, reversedSeatIndex) => {
+                const originalSeatIndex = row.length - 1 - reversedSeatIndex;
+                return (
+                  <React.Fragment key={`${section.name}-${rowIndex}-${reversedSeatIndex}`}>
+                    {renderSeatButton(seat)}
+                    {originalSeatIndex - 1 === aisleAfterColumn && (
+                      <span className="bus-flow-vertical-aisle" />
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderVerticalDeck = (deckName, sections, deckClassName) => (
+    <section
+      key={deckName}
+      className={`bus-flow-vertical-deck ${deckClassName}`}
+    >
+      <header className="bus-flow-vertical-deck-header">
+        <span>{deckName}</span>
+      </header>
+      <div className="bus-flow-vertical-deck-body">
+        {sections.map(renderVerticalSection)}
+      </div>
+    </section>
+  );
+
+  const renderBusShell = (deckContent) => {
+    return (
+      <div className="hologram-bus-shell is-top-view">
+        <span className="bus-flow-bus-wheel wheel-front-left" />
+        <span className="bus-flow-bus-wheel wheel-front-right" />
+        <span className="bus-flow-bus-wheel wheel-back-left" />
+        <span className="bus-flow-bus-wheel wheel-back-right" />
+
+        <div className="bus-flow-coach-front" aria-hidden="true">
+          <div className="bus-flow-windshield">
+            <span />
+            <span />
+          </div>
+          <div className="bus-flow-steering">
+            <svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="9" stroke="#1e293b" strokeWidth="2.2" />
+              <circle cx="12" cy="12" r="2.5" fill="#1e293b" />
+              <path d="M4 12h16" stroke="#1e293b" strokeWidth="1.8" />
+              <path d="M12 12v8" stroke="#1e293b" strokeWidth="1.8" />
+            </svg>
+          </div>
+          <div className="bus-flow-driver-seat driver">
+            <SeaterSVG />
+          </div>
+          <div className="bus-flow-driver-seat helper">
+            <SeaterSVG />
+          </div>
+          <span className="bus-flow-front-label">FRONT</span>
+        </div>
+
+        <div className="bus-flow-coach-floor">
+          {deckContent}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <main className="bus-flow-page">
+      <div className="bus-flow-shell">
+        <section className="bus-flow-summary-card">
+          <div className="bus-flow-overview-banner">
+            <img
+              src={busOverview.background}
+              alt={`${busOverview.brand} bus`}
+              className="bus-flow-overview-bg"
+            />
+            <div className="bus-flow-overview-overlay" />
+            <div className="bus-flow-overview-content">
+              <div className="bus-flow-overview-logo-wrap">
+                <img
+                  src={busOverview.logo}
+                  alt={`${busOverview.brand} logo`}
+                  className="bus-flow-overview-logo"
+                />
+              </div>
+
+              <div className="bus-flow-overview-copy">
+                <p>{busOverview.routeText}</p>
+                <h3>{busOverview.operatorName}</h3>
+                <span>{busOverview.summaryText}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bus-flow-summary-grid">
+            <article>
+              <h2>{bus.operatorName}</h2>
+              <p>{bus.busType}</p>
+            </article>
+            <article>
+              <strong>{bus.departureTime}</strong>
+              <span>{bus.boardingPoint}</span>
+            </article>
+            <article className="bus-flow-duration">
+              <BusFront size={18} />
+              <span>{bus.duration}</span>
+            </article>
+            <article>
+              <strong>{bus.arrivalTime}</strong>
+              <span>{bus.droppingPoint}</span>
+            </article>
+            <article>
+              <small>Starts from</small>
+              <strong>{formatCurrency(bus.fare)}</strong>
+            </article>
+            <article>
+              <small>{bus.availableSeats} Seats Available</small>
+            </article>
+          </div>
+          <div className="bus-flow-summary-actions">
+            <button
+              type="button"
+              className={activeCardPanel === "boarding" ? "active" : ""}
+              onClick={() => setActiveCardPanel(activeCardPanel === "boarding" ? null : "boarding")}
+            >
+              Boarding & Dropping Points
+            </button>
+            <button
+              type="button"
+              className={activeCardPanel === "policy" ? "active" : ""}
+              onClick={() => setActiveCardPanel(activeCardPanel === "policy" ? null : "policy")}
+            >
+              Cancellation Policies
+            </button>
+            <button
+              type="button"
+              className="active"
+              onClick={() => navigate(-1)}
+            >
+              {isSeatLayoutLoading ? "VIEW SEATS" : "HIDE SEAT"}
+            </button>
+          </div>
+          {activeCardPanel && (
+            <div className="bus-flow-expand-panel">
+              {activeCardPanel === "boarding" ? (
+                <p>
+                  Boarding Point: <strong>{bus.boardingPoint}</strong> | Dropping Point:{" "}
+                  <strong>{bus.droppingPoint}</strong>
+                </p>
+              ) : (
+                <p>
+                  Free cancellation available up to 6 hours before departure. Partial refund
+                  may apply afterwards.
+                </p>
+              )}
+            </div>
+          )}
+        </section>
+
+        {isSeatLayoutLoading || isFetchingSeats ? (
+          <section className="bus-flow-seat-loader">
+            <div className="loader-bars" aria-label="Loading seats">
+              <span />
+              <span />
+              <span />
+            </div>
+            <p style={{ marginTop: '16px', color: '#5e7694', fontSize: '0.85rem' }}>
+              {isFetchingSeats ? "Fetching live seat availability..." : "Loading seat layout..."}
+            </p>
+          </section>
+        ) : seatFetchError ? (
+          <section className="bus-flow-seat-error">
+            <div className="error-content">
+              <Info size={32} />
+              <h3>Unable to Load Seats</h3>
+              <p>{seatFetchError}</p>
+              <button type="button" onClick={handleRetryFetchSeats}>
+                Try Again
+              </button>
+            </div>
+          </section>
+        ) : (
+          <section className="bus-flow-seat-layout">
+            <div className="bus-flow-seat-zone">
+              <header className="bus-flow-seat-top">
+                <div className="bus-flow-fares">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3>{bus.availableSeats} Seats Available</h3>
+                    <button type="button" className="bus-flow-info-btn" title="Seat Information">
+                      <Info size={18} />
+                    </button>
+                  </div>
+                  <div className="bus-flow-fare-chips">
+                    <button
+                      type="button"
+                      className={activeFareFilter === "all" ? "active" : ""}
+                      onClick={() => setActiveFareFilter("all")}
+                    >
+                      All
+                    </button>
+                    {seatData.fareBands.map((fare) => (
+                      <button
+                        type="button"
+                        key={fare}
+                        className={Number(activeFareFilter) === fare ? "active" : ""}
+                        onClick={() => setActiveFareFilter(fare)}
+                      >
+                        {formatCurrency(fare)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bus-flow-seat-legend">
+                  <span className="legend available">Available Seats</span>
+                  <span className="legend booked">Booked Seats</span>
+                  <span className="legend female-booked">Female Booked</span>
+                  <span className="legend female-adjacent">Beside Female</span>
+                  <span className="legend selected">Selected Seats</span>
+                </div>
+              </header>
+
+              <div className="hologram-bus-container">
+                <div className="hologram-floor" />
+                <div className="bus-flow-vertical-layout">
+                  {hasDeckSections ? (
+                    hasBackendSections ? (
+                      seatDeckGroups.map((deckGroup) =>
+                        renderBusShell(
+                          renderVerticalDeck(
+                            deckGroup.name,
+                            deckGroup.sections,
+                            `bus-flow-vertical-deck--${deckGroup.name
+                              .toLowerCase()
+                              .replace(/[^a-z0-9]+/g, "-")}`
+                          )
+                        )
+                      )
+                    ) : (
+                      <>
+                        {renderBusShell(
+                          renderHorizontalDeck(
+                            "Lower Deck",
+                            lowerDeckRows,
+                            `bus-flow-vertical-deck--lower bus-flow-${layoutKind}-lower-deck`,
+                            "No lower deck seats available"
+                          )
+                        )}
+                        {renderBusShell(
+                          renderHorizontalDeck(
+                            "Upper Deck",
+                            upperDeckRows,
+                            "bus-flow-vertical-deck--upper",
+                            "No upper deck seats available"
+                          )
+                        )}
+                      </>
+                    )
+                  ) : (
+                    renderBusShell(
+                      <section className="bus-flow-vertical-deck bus-flow-seater-deck bus-flow-vertical-deck--main">
+                        <header className="bus-flow-vertical-deck-header">
+                          <span>MAIN DECK</span>
+                        </header>
+                        <div className="bus-flow-vertical-deck-body">
+                          <div className="bus-flow-vertical-row bus-flow-main-seat-grid">
+                            {mainDeckRows.map((row, rowIndex) => (
+                              <React.Fragment key={`main-${rowIndex}`}>
+                                {renderSeatButton(row[0])}
+                                {renderSeatButton(row[1])}
+                                <span className="bus-flow-vertical-aisle" />
+                                {renderSeatButton(row[2])}
+                                {renderSeatButton(row[3])}
+                              </React.Fragment>
+                            ))}
+                          </div>
+                        </div>
+                      </section>
+                    )
+                  )}
+                </div>
+              </div>
+
+              {hoveredSeat && (
+                <div
+                  className="bus-flow-seat-tooltip"
+                  style={{
+                    left: `${Math.min(window.innerWidth - 190, hoveredSeat.x + 14)}px`,
+                    top: `${Math.max(8, hoveredSeat.y - 34)}px`,
+                  }}
+                >
+                  Seat No: {hoveredSeat.displayLabel || hoveredSeat.label} |{" "}
+                  {hoveredSeat.status === "booked" && hoveredSeat.bookedGender === "Female" && "Female Booked | "}
+                  {hoveredSeat.status !== "booked" && hoveredSeat.bookedGender === "Female" && "Female Available | "}
+                  {hoveredSeat.status !== "booked" && hoveredSeat.bookedGender !== "Female" && hoveredSeat.isNextToBookedFemale && "Beside Female Seat | "}
+                  Fare: {formatCurrency(hoveredSeat.fare)}
+                </div>
+              )}
+            </div>
+
+            <aside className="bus-flow-point-panel">
+              <h3>Select Boarding & Dropping</h3>
+
+              <div className="point-tabs">
+                <button
+                  type="button"
+                  className={activePointTab === "boarding" ? "active" : ""}
+                  onClick={() => setActivePointTab("boarding")}
+                >
+                  Boarding
+                </button>
+                <button
+                  type="button"
+                  className={activePointTab === "dropping" ? "active" : ""}
+                  onClick={() => setActivePointTab("dropping")}
+                >
+                  Dropping
+                </button>
+              </div>
+
+              <div className="point-list">
+                {(activePointTab === "boarding" ? boardingPoints : droppingPoints).map((point) => {
+                  const checked =
+                    activePointTab === "boarding"
+                      ? selectedBoardingId === point.id
+                      : selectedDroppingId === point.id;
+
+                  return (
+                    <button
+                      type="button"
+                      key={point.id}
+                      className={`point-item ${checked ? "selected" : ""}`}
+                      onClick={() => {
+                        if (activePointTab === "boarding") {
+                          setSelectedBoardingId(point.id);
+                          setActivePointTab("dropping");
+                        } else {
+                          setSelectedDroppingId(point.id);
+                        }
+                      }}
+                    >
+                      <i />
+                      <div>
+                        <strong>{point.name}</strong>
+                        <span>{point.address}</span>
+                      </div>
+                      <small>
+                        <Clock3 size={14} />
+                        {point.time}
+                      </small>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="selected-seat-summary">
+                <h4>Selected Seats</h4>
+                <strong>{formatCurrency(selectedSeatTotal)}</strong>
+              </div>
+
+              <div className="selected-seat-list">
+                {selectedSeats.length === 0 ? (
+                  "No Seats selected yet"
+                ) : (
+                  selectedSeats.map((seat) => (
+                    <div key={seat.label} className="selected-seat-row">
+                      <span className="seat-label-text">{seat.label}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {selectionError && (
+                <p className="flow-error" style={{ color: '#ff007f', fontSize: '0.9rem', marginTop: '10px' }}>
+                  <Info size={14} style={{ marginRight: '5px' }} />
+                  {selectionError}
+                </p>
+              )}
+
+              <button
+                type="button"
+                className="flow-continue-btn"
+                disabled={selectedSeats.length === 0 || !selectedBoarding || !selectedDropping}
+                onClick={handleContinue}
+              >
+                Continue to Payment
+              </button>
+            </aside>
+          </section>
+        )}
+      </div>
+    </main>
+  );
+}

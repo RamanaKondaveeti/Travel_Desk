@@ -1,0 +1,189 @@
+﻿using Microsoft.EntityFrameworkCore;
+using PickNBook.Api.Data;
+using PickNBook.Api.Models;
+using PickNBook.Api.Models.DTOs;
+
+namespace PickNBook.Api.Services
+{
+    public class AdminFeaturedOffersService
+     : IAdminFeaturedOffersService
+    {
+        private readonly AppDbContext _context;
+        private readonly IWebHostEnvironment _environment;
+
+        public AdminFeaturedOffersService(
+     AppDbContext context,
+     IWebHostEnvironment environment)
+        {
+            _context = context;
+            _environment = environment;
+        }
+
+        public async Task<List<FeaturedOffer>> GetAllAsync()
+        {
+            return await _context.FeaturedOffers
+                .AsNoTracking()
+                .OrderByDescending(x => x.CreatedAtUtc)
+                .ToListAsync();
+        }
+
+        public async Task<FeaturedOffer?> GetByIdAsync(int id)
+        {
+            return await _context.FeaturedOffers
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<FeaturedOffer> CreateAsync(
+     AdminFeaturedOfferRequestDto request)
+        {
+            var exists = await _context.FeaturedOffers
+                .AnyAsync(x =>
+                    x.OfferCode == request.OfferCode);
+
+            if (exists)
+            {
+                throw new Exception(
+                    "OfferCode already exists.");
+            }
+
+            string imageUrl = string.Empty;
+
+            if (request.Image != null)
+            {
+                imageUrl =
+                    await SaveImageAsync(request.Image);
+            }
+
+            var offer = new FeaturedOffer
+            {
+                OfferCode = request.OfferCode,
+                Title = request.Title,
+                Subtitle = request.Subtitle,
+                Description = request.Description,
+                CouponCode = request.CouponCode,
+                BasePrice = request.BasePrice,
+                IsPercentageDiscount =
+                    request.IsPercentageDiscount,
+                DiscountValue =
+                    request.DiscountValue,
+                CouponExpiresAtUtc =
+                    request.CouponExpiresAtUtc,
+                MaxCouponUsage =
+                    request.MaxCouponUsage,
+                CouponUsedCount =
+                    request.CouponUsedCount,
+                IsActive =
+                    request.IsActive,
+                BookingType =
+                    request.BookingType,
+                ImageUrl = imageUrl,
+                CreatedAtUtc = DateTime.UtcNow,
+                UpdatedAtUtc = DateTime.UtcNow
+            };
+
+            _context.FeaturedOffers.Add(offer);
+
+            await _context.SaveChangesAsync();
+
+            return offer;
+        }
+
+        public async Task<FeaturedOffer?> UpdateAsync(
+     int id,
+     AdminFeaturedOfferRequestDto request)
+        {
+            var offer = await _context.FeaturedOffers
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (offer == null)
+            {
+                return null;
+            }
+
+            offer.OfferCode = request.OfferCode;
+            offer.Title = request.Title;
+            offer.Subtitle = request.Subtitle;
+            offer.Description = request.Description;
+            offer.CouponCode = request.CouponCode;
+            offer.BasePrice = request.BasePrice;
+
+            offer.IsPercentageDiscount =
+                request.IsPercentageDiscount;
+
+            offer.DiscountValue =
+                request.DiscountValue;
+
+            offer.CouponExpiresAtUtc =
+                request.CouponExpiresAtUtc;
+
+            offer.MaxCouponUsage =
+                request.MaxCouponUsage;
+
+            offer.CouponUsedCount =
+                request.CouponUsedCount;
+
+            offer.IsActive =
+                request.IsActive;
+
+            offer.BookingType =
+                request.BookingType;
+
+            if (request.Image != null)
+            {
+                offer.ImageUrl =
+                    await SaveImageAsync(request.Image);
+            }
+
+            offer.UpdatedAtUtc = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return offer;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var offer = await _context.FeaturedOffers
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (offer == null)
+            {
+                return false;
+            }
+
+            _context.FeaturedOffers.Remove(offer);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+        private async Task<string> SaveImageAsync(
+    IFormFile file)
+        {
+            var uploadsFolder = Path.Combine(
+                _environment.WebRootPath,
+                "offers");
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(
+                    uploadsFolder);
+            }
+
+            var uniqueFileName =
+                Guid.NewGuid().ToString() +
+                Path.GetExtension(file.FileName);
+
+            var filePath = Path.Combine(
+                uploadsFolder,
+                uniqueFileName);
+
+            using var stream =
+                new FileStream(filePath, FileMode.Create);
+
+            await file.CopyToAsync(stream);
+
+            return $"/offers/{uniqueFileName}";
+        }
+    }
+    }

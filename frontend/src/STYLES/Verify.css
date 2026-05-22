@@ -1,0 +1,20 @@
+.travel-auth-verify {
+  --login-card-width: 438px;
+  --login-card-height: 520px;
+}
+
+.travel-auth-verify .travel-auth-form-panel {
+  padding: 24px 30px 20px;
+}
+
+.travel-auth-verify .travel-auth-heading {
+  font-size: 28px;
+}
+
+.travel-auth-verify .travel-field-line {
+  min-height: 52px;
+}
+
+.travel-auth-verify .travel-auth-status {
+  font-size: 12.8px;
+}
