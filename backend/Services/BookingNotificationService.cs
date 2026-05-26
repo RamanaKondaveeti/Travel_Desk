@@ -8,7 +8,7 @@ public class BookingNotificationService(
     IConfiguration configuration,
     ILogger<BookingNotificationService> logger) : IBookingNotificationService
 {
-    private const string DefaultTicketEmailUrl = "https://duncan-exclamatory-synaptically.ngrok-free.dev/api/Tickets/send-email";
+    private const string DefaultTicketEmailUrl = "http://3.111.182.53:8080/api/Tickets/send-email";
 
     public async Task<bool> TrySendTicketEmailAsync(TicketEmailRequestDto request, CancellationToken cancellationToken = default)
     {

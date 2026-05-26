@@ -61,7 +61,7 @@ const USE_DIRECT_API_IN_DEV =
 const IS_LOCAL_DEV =
   process.env.NODE_ENV === "development" &&
   typeof window !== "undefined" &&
-  ["localhost", "127.0.0.1", "0.0.0.0"].includes(window.location.hostname);
+  ["3.111.182.53"].includes(window.location.hostname);
 const PLACES_API_URL =
   IS_LOCAL_DEV && !USE_DIRECT_API_IN_DEV
     ? "/api/Places"

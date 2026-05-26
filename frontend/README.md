@@ -68,7 +68,7 @@ cp .env.example .env
 Open `.env` and fill in the required values:
 
 ```env
-REACT_APP_API_BASE_URL=http://localhost:5000/api
+REACT_APP_API_BASE_URL=http://3.111.182.53:8080/api
 ```
 
 ### 4. Start the development server
@@ -77,7 +77,7 @@ REACT_APP_API_BASE_URL=http://localhost:5000/api
 npm start
 ```
 
-The app will open at **http://localhost:3000**
+The app will open at **http://3.111.182.53:3000**
 
 ## 🏗️ Build for Production
 
@@ -91,8 +91,8 @@ Output will be in the `build/` folder.
 
 | Portal | URL | Credentials |
 |--------|-----|-------------|
-| User Portal | http://localhost:3000 | Register/Login |
-| Admin Portal | http://localhost:3000/admin | Admin login + OTP PIN |
+| User Portal | http://3.111.182.53:3000 | Register/Login |
+| Admin Portal | http://3.111.182.53:3000/admin | Admin login + OTP PIN |
 
 ## 📦 Key Dependencies
 

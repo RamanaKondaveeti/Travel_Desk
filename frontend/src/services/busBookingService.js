@@ -1,9 +1,9 @@
 import { toDdMmYyyy } from "../utils/apiDateFormat";
 
 const FALLBACK_API_BASE_URL =
-  "https://undogmatically-knotlike-evita.ngrok-free.dev";
+  "http://3.111.182.53:8080";
 
-const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
+const LOCAL_HOSTNAMES = new Set(["3.111.182.53"]);
 function getAuthHeaders() {
   const isAdminRoute =
     typeof window !== "undefined" &&

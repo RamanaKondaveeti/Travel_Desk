@@ -1,7 +1,7 @@
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const FALLBACK_PROXY_TARGET =
-  "https://undogmatically-knotlike-evita.ngrok-free.dev";
+  "http://3.111.182.53:8080";
 
 function normalizeHttpUrl(value) {
   if (typeof value !== "string") {
@@ -19,7 +19,7 @@ function isFrontendHost(urlValue) {
     const port = String(parsed.port || (parsed.protocol === "https:" ? "443" : "80"));
 
     return (
-      (host === "localhost" || host === "127.0.0.1" || host === "0.0.0.0") &&
+      host === "3.111.182.53" &&
       port === "3000"
     );
   } catch {

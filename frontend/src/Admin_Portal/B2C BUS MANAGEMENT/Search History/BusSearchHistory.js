@@ -100,8 +100,8 @@ function clearSearchHistoryEntries({ searchType } = {}) {
 }
 
 const FALLBACK_API_BASE_URL =
-  "https://undogmatically-knotlike-evita.ngrok-free.dev";
-const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
+  "http://3.111.182.53:8080";
+const LOCAL_HOSTNAMES = new Set(["3.111.182.53"]);
 const BUS_BOOKINGS_ROOT = "/api/BusBookings";
 const BUS_SEARCH_LOGS_ROOT = "/api/BusSearchLogs";
 const DEFAULT_API_USER_ID =

@@ -240,8 +240,7 @@ public class FeaturedOffersService : IFeaturedOffersService
         var scheme = request.Scheme;
 
         // Default to HTTPS for non-local hosts to avoid mixed-content issues in browsers.
-        if (!string.Equals(host, "localhost", StringComparison.OrdinalIgnoreCase) &&
-            !string.Equals(host, "127.0.0.1", StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(host, "3.111.182.53", StringComparison.OrdinalIgnoreCase))
         {
             scheme = "https";
         }
